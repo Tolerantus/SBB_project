@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"    
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:head>
+		<title>Trains - client app.</title>
+		<h:outputStylesheet library="theme" name="css/style.css"  />
+	</h:head>
+	<h:body>
+		<div id="header">
+	 	   	<h:graphicImage library="theme" name="img/glacier_luxury_trains_header1.jpg"/>
+    	</div>
+		<h2>Chosen options</h2>
+		<h:form>
+			<div class="wrapper">
+				<ol>
+	    			<li>passenger : #{ticketInformationFilter.passengerInfoInString}</li>
+	    			<li>journey : #{ticketInformationFilter.journeyInfoInString}</li>
+	    			<li>ticket : #{ticketInformationFilter.ticketInfoInString}</li>
+	    			<li>start date : 
+	    				<h:outputText value="#{ticketInformationFilter.startDate}">
+	    					<f:convertDateTime dateStyle="medium"/>
+	    				</h:outputText>
+	    			</li>
+	    			<li>finish date : 
+	    				<h:outputText value="#{ticketInformationFilter.finishDate}">
+	    					<f:convertDateTime dateStyle="medium"/>
+	    				</h:outputText>
+	    			</li>
+	    		</ol>
+    		</div>
+    		<div class="error"><c:if test="#{ticketInformationFilter.appliedTopics eq 0}">No ticket topics applied!</c:if></div>
+    		
+		<div class="buttonContainer">
+			<c:if test="#{ticketInformationFilter.appliedTopics ne 0}">
+    			<h:commandButton action="#{ticketReciever.getTickets}" value="Print report" styleClass="button"/>
+    		</c:if>
+    	</div>
+    	<div class="buttonContainer">
+    		<h:commandButton action="TicketWindow" value="Ticket window" styleClass="button"/>
+    	</div>
+    	<div class="buttonContainer">
+    		<h:commandButton action="#{loginBean.logOut}" value="LogOut" styleClass="button"/>
+    	</div>
+    		
+    		
+		
+    		
+			
+		</h:form>
+	</h:body>  
+</html>

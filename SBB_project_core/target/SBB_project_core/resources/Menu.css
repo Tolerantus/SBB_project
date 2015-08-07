@@ -1,0 +1,70 @@
+@CHARSET "UTF-8";
+/* input{
+width:200px;
+}
+table{
+	margin:auto;
+	padding:20px;
+	background-color: #eee;
+	border-radius:10px;
+} */
+*{
+	margin:0;
+    padding:0;
+    outline:none;
+}
+.wrapper{
+	margin:auto;
+    width:500px;
+    padding:30px 10px;
+}
+.menu-item{
+	margin:auto;
+	width:50%;
+}
+.menu-item2{
+	margin:auto;
+	width:50%;
+}
+.menu-item2 input{
+	font-family:"PT sans" sans-serif;
+	font-size:20px;
+	border:none;
+	width:250px;
+	height:40px;
+	cursor:pointer;
+	background:#d39c9c;
+	color:#fff;
+	margin:3px;
+}
+.menu-item2 input:hover{
+	background:#ec4b4b;
+}
+.menu-item input{
+	font-family:"PT sans" sans-serif;
+	font-size:20px;
+	border:none;
+	width:250px;
+	height:40px;
+	cursor:pointer;
+	background:#5f81a3;
+	color:#fff;
+	margin:3px;
+}
+.menu-item input:hover{
+	 background:#789abc;
+	color:#fff;
+}
+.user img{
+	margin:10px 10px;
+	width:30px;
+	height:30px;
+}
+.user{
+	color:#fff;
+}
+body{
+	background:url(images/Auth.jpg);
+	 background-size: cover;
+	 font-family:"PT sans" sans-serif;
+}

@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+*{
+    margin:0;
+    padding:0;
+    outline:none;
+}
+body{
+    background:#c7b39b url(images/Auth.jpg);
+    font-family:"PT sans" sans-serif;
+    background-size: cover;
+}
+.wrapper{
+	width:500px;
+	margin:100px auto;
+	font-family: "PT sans" sans-serif;
+	font-size:20px;
+	background:#5f81a3;
+	padding:20px 50px;
+	color:#fff;
+}
+.data{
+	
+	width:500px;
+}
+h1{
+    color:#555;
+    text-align:center;
+    font-size:35px;
+}
+.user img{
+	margin:10px 10px;
+	width:30px;
+	height:30px;
+}
+.user{
+	color:#fff;
+}
+
+input{
+	border:none;
+	width:250px;
+	height:30px;
+	background:#5f81a3;
+	color:#fff;
+	font-family: "PT sans" sans-serif;
+	font-size:20px;
+}
+.submit{
+	margin:auto;
+	width:250px;
+}
+input:hover{
+	cursor:pointer;
+	background:#789abc;
+}
+#menu{
+	/* position:fixed; */
+	width:50px;
+	height:50px;
+    border:none;
+    background:#5f81a3;
+    cursor:pointer;
+    
+}
+#menu img{
+	width:50px;
+	height:50px;
+}
+#menu:hover{
+	background:#789abc;
+}

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"    
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:head>
+		<title>Trains - client app.</title>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"/>
+		<h:outputStylesheet library="theme" name="css/style.css"  />
+	</h:head>
+	<h:body>
+		<div id="header">
+	 	   	<h:graphicImage library="theme" name="img/glacier_luxury_trains_header1.jpg"/>
+    	</div>
+		<h2>Ticket window</h2>
+		
+		<h:form>
+		<div class="dates">
+			<h:panelGrid columns="3">
+				Start date:
+				<h:inputText value="#{ticketInformationFilter.startDate}" required="false" id="Start">
+					<f:convertDateTime pattern="dd-MM-yyyy"/> 
+				</h:inputText>
+				<h:message for="Start" style="color:red"/>
+				Finish date:
+				<h:inputText value="#{ticketInformationFilter.finishDate}" required="false" id="Finish">
+					<f:convertDateTime pattern="dd-MM-yyyy"/> 
+				</h:inputText>
+				<h:message for="Finish" style="color:red"/>
+			</h:panelGrid>
+			<h:outputText value="#{ticketInformationFilter.errorDates}" style="color:red"/>
+		</div>
+			
+			<div class="options">
+				<h:panelGrid columns="1">
+				<div class="option">
+				Passenger data:
+					<h:selectManyCheckbox value="#{ticketInformationFilter.passengerInfo}">
+						<f:selectItems class="check" value="#{ticketInformationFilter.passengerInfoValue}" />
+					</h:selectManyCheckbox>
+				</div>
+				<div class="option">
+				Journey data:
+					<h:selectManyCheckbox  value="#{ticketInformationFilter.journeyInfo}">
+						<f:selectItems class="check" value="#{ticketInformationFilter.journeyInfoValue}"/>
+					</h:selectManyCheckbox>
+				</div>	
+				<div class="option">
+				Ticket data:
+					<h:selectManyCheckbox  value="#{ticketInformationFilter.ticketInfo}">
+						<f:selectItems class="check"  value="#{ticketInformationFilter.ticketInfoValue}"/>
+					</h:selectManyCheckbox>
+				</div>
+				</h:panelGrid>
+			</div>
+			
+			
+				
+			
+			<div class="buttonContainer">
+				<h:commandButton action="#{ticketInformationFilter.checkDate}" 
+							value="Apply options" styleClass="button"/>
+			</div>
+			<div class="buttonContainer"><h:commandButton action="#{loginBean.logOut}" value="LogOut" styleClass="button"/></div>
+			
+		</h:form>
+		
+
+
+ 
+
+	</h:body>  
+</html>

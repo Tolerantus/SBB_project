@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14388092790788" configfile="/SBB_project_client/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="Login.xhtml" x="554" y="279" id="pf14388093808159" referenceLink="//@navigationRule.4/@navigationCase.0/@toViewId|" outlinks="pf143880938081510" inlinks="pf143880938081511 pf143880938081512" path="/Login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="TicketWindow.xhtml" x="338" y="178" id="pf143880938081513" referenceLink="//@navigationRule.3/@navigationCase.0/@toViewId|" outlinks="pf143880938081514 pf143880938081511" inlinks="pf143880938081510 pf143880938081515" path="/TicketWindow.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="ChosenOptions.xhtml" x="122" y="279" id="pf143880938081516" referenceLink="//@navigationRule.4/@fromViewId|" outlinks="pf143880938081515 pf143880938081512" inlinks="pf143880938081514" path="/ChosenOptions.xhtml"/>
+  <links id="pf143880938081510" target="pf143880938081513" source="pf14388093808159" outcome="#{userValidator.validate}" redirect="true"/>
+  <links id="pf143880938081514" target="pf143880938081516" source="pf143880938081513" outcome="#{ticketInformationFilter.checkDate}" redirect="true"/>
+  <links id="pf143880938081511" target="pf14388093808159" source="pf143880938081513" outcome="#{loginBean.logOut}" redirect="true"/>
+  <links id="pf143880938081515" target="pf143880938081513" source="pf143880938081516" outcome="TicketWindow" redirect="true"/>
+  <links id="pf143880938081512" target="pf14388093808159" source="pf143880938081516" outcome="#{loginBean.logOut}" redirect="true"/>
+</pageflow:Pageflow>

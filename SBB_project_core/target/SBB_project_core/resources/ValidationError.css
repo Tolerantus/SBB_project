@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+.error-box{
+	border:1px solid red;
+}
+.error-mes{
+	color:red;
+	font-size:10px;
+	font-family:sans-serif;
+}

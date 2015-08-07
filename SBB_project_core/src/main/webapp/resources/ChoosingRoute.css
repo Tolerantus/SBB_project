@@ -1,0 +1,142 @@
+@CHARSET "UTF-8";
+*{
+    margin:0;
+    padding:0;
+    outline:none;
+}
+body{
+    background:#c7b39b url(images/Auth.jpg);
+    font-family:"PT sans" sans-serif;
+    background-size: cover;
+}
+.wrapper{
+    margin:100px auto;
+    width:200px;
+    padding:20px 30px 30px 30px;
+}
+h1{
+	margin-bottom:40px;
+    color:#555;
+    text-align:center;
+    font-size:35px;
+}
+
+.submit{
+	font-family:"PT sans" sans-serif;
+	font-size:20px;
+    margin-top:10px;
+    padding:10px 30px;
+    border:none;
+    color:#fff;
+    background:#5f81a3;
+    cursor:pointer;
+    font-size:17px;
+    width:150px;
+}
+
+.submit:hover{
+    background:#789abc;
+}
+.link{
+	margin-left:30px;
+	color:#5f81a3;
+}
+.link:hover{
+	cursor:pointer;
+}
+.status{
+	color:#b73854;
+}
+.button-container{
+	margin-left:25px;
+}
+#t{
+	margin:40px auto;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 0;
+  text-shadow: 0 1px 0 #fff;
+  color: #2a2a2a;
+  background: #fafafa;
+  background-image: -moz-linear-gradient(top, #fff, #eaeaea, #fff); /* Firefox 3.6 */
+  background-image: -webkit-gradient(linear,center bottom,center top,from(#fff),color-stop(0.5, #eaeaea),to(#fff));
+  margin-top:20px;
+  margin-bottom:20px;
+}
+td{
+	height: 50px;
+  padding: 0 20px;
+  border-bottom: 1px solid #cdcdcd;
+  box-shadow: 0 1px 0 white;
+  -moz-box-shadow: 0 1px 0 white;
+  -webkit-box-shadow: 0 1px 0 white;
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+}
+#t thead td
+{
+  font-size: 120%; 
+  font-weight: bold;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-topleft: 10px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top: 1px solid #eaeaea;
+}
+.user img{
+	margin:10px 10px;
+	width:30px;
+	height:30px;
+}
+.user{
+	color:#fff;
+}
+#menu{
+
+	width:50px;
+	height:50px;
+    border:none;
+    background:#5f81a3;
+    cursor:pointer;
+    
+}
+#menu img{
+	width:50px;
+	height:50px;
+}
+#menu:hover{
+	background:#789abc;
+}
+ul{
+	margin-top:20px;
+	background:#5f81a3;
+	color:#fff;
+}
+#routes{
+	width:800px;
+	margin:auto;
+}
+#datetime{
+	width:300px;
+	margin:auto;
+	padding:15px;
+	background:#5f81a3;
+}
+.time{
+	width:100px;
+	float:left;
+	margin-left:30px;
+}
+li:HOVER{
+	background:#789abc;
+	cursor:pointer;
+}
+#inv-date{
+	margin-left:35px;
+	color:#d39c9c;
+}
+#top-menu{
+	
+}
