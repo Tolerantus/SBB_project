@@ -15,6 +15,7 @@ import com.dao.Dao;
 import com.dto.NewUserInfo;
 import com.dto.UserExist;
 import com.entities.User;
+import com.entities.UserRole;
 @Service("userRegistrator")
 public class UserRegistrator {
 	private Dao dao;
@@ -30,8 +31,9 @@ private static final Logger LOG = Logger.getLogger(UserRegistrator.class);
 			oldUser = dao.getUserByName(dto.getLogin());
 			UserExist user = null;
 			if (oldUser == null) {
-				Set<String> role = new HashSet<String>(); role.add("ROLE_USER");
-				dao.createUser(dto.getLogin(), dto.getPassword(), false, role);
+				UserRole userRole = dao.getRoleByString("ROLE_USER");
+				Set<UserRole> roles = new HashSet<UserRole>(); roles.add(userRole);
+				dao.createUser(dto.getLogin(), dto.getPassword(), false, roles);
 				LOG.info("User created");
 				user = new UserExist(false, false);
 			} else {

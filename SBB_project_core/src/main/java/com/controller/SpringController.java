@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -215,7 +216,8 @@ public class SpringController {
 		String year = request.getParameter("year");
 		String month = request.getParameter("month");
 		String day = request.getParameter("day");
-		String currentUser = (String) session.getAttribute("user");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUser = auth.getName();
 		List<String> allJourneysData = (List<String>)session.getAttribute("journeysData");
 		PassengerInfo passengerInfo = new PassengerInfo
 				(currentUser, passengerDepAndDestStations, name, surname, year, month, day, allJourneysData);

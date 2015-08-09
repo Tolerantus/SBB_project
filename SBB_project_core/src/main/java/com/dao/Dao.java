@@ -551,29 +551,59 @@ public void clearPassengers() {
 		session.delete(p);
 	}
 }
-public User createUser( String login,  String password,  boolean accountType, Set<String> stringRoles) {
+public UserRole createUserRole(String role) {
+	Session session = sessionFactory.getCurrentSession();
+	UserRole userRole = new UserRole(); userRole.setRole(role);
+	session.save(userRole);
+	return userRole;
+}
+public UserRole deleteUserRole(int userRoleId) {
+	Session session = sessionFactory.getCurrentSession();
+	UserRole userRole = (UserRole) session.get(UserRole.class, userRoleId);
+	session.delete(userRole);
+	return userRole;
+}
+@SuppressWarnings("unchecked")
+public void clearUserRole() {
+	Session session = sessionFactory.getCurrentSession();
+	List<UserRole> roles = session.createQuery("from UserRole").list();;
+	for (UserRole r : roles) {
+		session.delete(r);
+	}
+}
+public void initUserRole() {
+	clearUserRole();
+	createUserRole("ROLE_ADMIN");
+	createUserRole("ROLE_USER");
+}
+@SuppressWarnings("unchecked")
+public UserRole getRoleByString(String stringRole) {
+	Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from UserRole as r where r.role=:param");
+	query.setParameter("param", stringRole);
+	List<UserRole> roles = query.list();
+	
+	if (roles.size() != 1) {
+		throw new RuntimeException();
+	}
+	return roles.get(0);
+}
+public User createUser( String login,  String password,  boolean accountType, Set<UserRole> roles) {
 	Session session = sessionFactory.getCurrentSession();
 	User u = new User();
 	u.setUserLogin(login);
 	u.setUserPassword(password);
 	u.setAccountType(accountType);
-	Set<UserRole> roles = new HashSet<UserRole>();
-	for (String role : stringRoles) {
-		UserRole userRole = new UserRole();
-		userRole.setRole(role);
-		userRole.setUser(u);
-		session.save(userRole);
-		roles.add(userRole);
-	}
 	u.setUserRole(roles);
 	session.save(u);
 	return u;
 }
 public void initUsers() {
 	clearUsers();
-	
-	Set<String> role = new HashSet<String>(); role.add("ROLE_ADMIN");
-	createUser("root@root.ru", "root", true, role);
+	initUserRole();
+	UserRole userRole = getRoleByString("ROLE_ADMIN");
+	Set<UserRole> rootRole = new HashSet<UserRole>(); rootRole.add(userRole);
+	createUser("root@root.ru", "root", true, rootRole);
 }
 
 public User getUser( int userId) {

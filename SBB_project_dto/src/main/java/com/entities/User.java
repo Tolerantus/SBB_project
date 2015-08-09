@@ -27,7 +27,7 @@ private String userPassword;
 @Column(name = "account_type")
 private boolean accountType;
 
-@OneToMany
+@OneToMany(fetch = FetchType.EAGER)
 @Column(name = "user_role")
 private Set<UserRole> userRole = new HashSet<UserRole>(0);
 
