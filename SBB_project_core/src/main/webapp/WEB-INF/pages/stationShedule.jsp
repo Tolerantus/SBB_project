@@ -8,18 +8,20 @@
 <head>
 <link rel="stylesheet" href=<c:url value='/resources/stationShedule.css'/>>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Station schedule</title>
+<title>Station schedule - SBB</title>
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
-<c:if test="${user!=null}">
+<c:if test="${pageContext.request.userPrincipal.name != null}">
 
-<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
-<div >
+<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div><div >
 	<div id="menu">
-		<c:url var="menuURL" value="/menu"/>
-		<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+		
+		<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 	</div>
 </div>
 <script type="text/javascript" src=<c:url value='/resources/returnToAuth.js'/>></script>
@@ -69,16 +71,15 @@
 <div class="wrapper">
 	
 	<div class="button-container">
-				<c:url var="scheduleURL" value="/schedule"/>
-				<form action="${scheduleURL }" method="post" name="back" >
-				<input type="hidden" name="action" value="GET_SHEDULE">
+				
+				<form action="<c:url value="/schedule"/>" method="get" name="back" >
 				<input type="button" class="submit" value="Back" onclick="document.forms['back'].submit()">
 				</form>
 	</div>
 </div>	
 </c:if>
 
-<c:if test="${user==null}">
+<c:if test="${pageContext.request.userPrincipal.name== null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
 	<c:url var="loginURL" value="/login"/>

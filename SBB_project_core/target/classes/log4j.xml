@@ -40,7 +40,7 @@
     </appender>
 
     <appender name="LOG-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\all.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\all_.log"/>
         <param name="maxFileSize" value="10MB" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %c %m at %l%n"/>

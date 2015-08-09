@@ -2,6 +2,7 @@
     pageEncoding="utf-8"%>
     <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,95 +13,84 @@
 <title>Menu</title>
 </head>
 <body>
-<c:url var="getShedule" value="/schedule"/>
-<c:url var="findJourneyURL" value="/stationsChoosing"/>
-<c:url var="checkTicketsURL" value="/myTickets"/>
-<c:if test="${user!=null}">
-<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
+
+
+<c:if test="${pageContext.request.userPrincipal.name != null}">
+<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div>
 <div class="wrapper">
 	<div class="menu-item">
-		<form action="${getShedule }" method="post">
-			<input type="hidden" name="action" value="GET_SHEDULE">
+		<form action="<c:url value="/schedule"/>" method="get">
 			<input type="submit" value="Show the schedule">
 		</form>
 	</div>
 	<div class="menu-item">
-		<form action="${findJourneyURL }" method="post">
-			<input type="hidden" name="action" value="FIND_JOURNEY">
+		<form action="<c:url value="/stationsChoosing"/>" method="get">
 			<input type="submit" name="buy" value="Buy a ticket">
 		</form>
 	</div>
 	<div class="menu-item">
-		<form action="${checkTicketsURL }" method="post">
-			<input type="hidden" name="action" value="CHECK_TICKETS">
+		<form action="<c:url value="/myTickets"/>" method="get">
 			<input type="submit" name="check" value="Check my tickets">
 		</form>
 	</div>
-	<c:url var="createRouteURL" value="/newRoute"/>
-	<c:if test="${admin==true }">
+	<sec:authorize access="hasRole('ROLE_ADMIN')">
 	<div class="menu-item2">
-		<form action="${createRouteURL }" method="post" name="newRouteForm" id="newRoute" >
-			<input type="hidden" name="action" value="CREATE_ROUTE">
+		<form action="<c:url value="/newRoute"/>" method="get" name="newRouteForm" id="newRoute" >
 			<input type="submit" value="Create route" >
 		</form>
 	</div>
-	<c:url var="createTrainURL" value="/creatingTrain"/>
+	
 	<div class="menu-item2">
-		<form action="${createTrainURL }" method="post">
+		<form action="<c:url value="/creatingTrain"/>" method="get">
 			<input type ="submit" value="Create train"> 
 		</form>
 	</div>
-	<c:url var="getRoutesInfoURL" value="/routesInfo"/>
+	
 	<div class="menu-item2">
-		<form action="${getRoutesInfoURL }" method="post">
-			<input type="hidden" name="action" value="GET_ROUTES_INFO">
+		<form action="<c:url value="/routesInfo"/>" method="get">
 			<input type="submit" value="Create journey">
 		</form>
 	</div>
-	<c:url var="stationCreatorURL" value="/newStationForm"/>
+	
 	<div class="menu-item2">
-		<form action="${stationCreatorURL }" method="post">
+		<form action="<c:url value="/newStationForm"/>" method="get">
 			<input type="submit" value="Create station">
 		</form>
 	</div>
-	<c:url var="journeyBriefURL" value="/journeyList"/>
+	
 	<div class="menu-item2">
-		<form action="${journeyBriefURL }" method="post">
-			<input type="hidden" name="action" value="GET_ALL_JOURNEYS_BRIEF">
+		<form action="<c:url value="/journeyList"/>" method="get">
 			<input type="submit" value="Show passengers...">
 		</form>
 	</div>
-	<c:url var="resetURL" value="/resetDB"/>
+	
 	<div class="menu-item2">
-		<form action="${resetURL }" method="post">
-			<input type="hidden" name="action" value="RESET_DB">
+		<form action="<c:url value="/resetDB"/>" method="get">
 			<input type="submit" value="Reset DataBase">
 		</form>
 	</div>
-	<c:url var="initURL" value="/initDB"/>
+	
 	<div class="menu-item2">
-		<form action="${initURL }" method="post">
-			<input type="hidden" name="action" value="INIT_DB">
+		<form action="<c:url value="/initDB"/>" method="get">
 			<input type="submit" value="Init DataBase">
 		</form>	
 	</div>
-	</c:if>
-	<c:url var="outURL" value="/out"/>
-	<div class="menu-item">
-		<form action="${outURL }" method="post">
-			<input type="hidden" name="action" value="OUT">
-			<input type="submit" name="out" value="LogOut">
-		</form>
-	</div>
+	</sec:authorize>
+	<%-- </c:if> --%>
+	
+	
 </div>
 </c:if>
 
 
-<c:if test="${user==null}">
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
+		
+		<form action="<c:url value="/login"/>">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

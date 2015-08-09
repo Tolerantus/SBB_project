@@ -1,6 +1,8 @@
 package com.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -25,6 +27,10 @@ private String userPassword;
 @Column(name = "account_type")
 private boolean accountType;
 
+@OneToMany
+@Column(name = "user_role")
+private Set<UserRole> userRole = new HashSet<UserRole>(0);
+
 @Override
 public int hashCode() {
 	final int prime = 31;
@@ -48,15 +54,14 @@ public boolean equals(Object obj) {
 	return true;
 }
 
-
-
 public User(int userId, String userLogin, String userPassword,
-		boolean accountType) {
+		boolean accountType, Set<UserRole> userRole) {
 	super();
 	this.userId = userId;
 	this.userLogin = userLogin;
 	this.userPassword = userPassword;
 	this.accountType = accountType;
+	this.userRole = userRole;
 }
 
 
@@ -97,6 +102,17 @@ public boolean isAccountType() {
 
 public void setAccountType(boolean accountType) {
 	this.accountType = accountType;
+}
+
+
+
+public Set<UserRole> getUserRole() {
+	return userRole;
+}
+
+
+public void setUserRole(Set<UserRole> userRole) {
+	this.userRole = userRole;
 }
 
 

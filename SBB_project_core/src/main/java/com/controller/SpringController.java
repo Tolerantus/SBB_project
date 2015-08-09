@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.dto.AllJourneysInfo;
 import com.dto.AllRoutesInfo;
@@ -49,14 +54,34 @@ public class SpringController {
 	@Autowired
 	private Dispatcher dispatcher;
 	
-	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
-	public String hello(HttpServletRequest request) {
-	    System.out.println(request.getServletPath());
-	    return "Auth";
+	
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public ModelAndView login(
+		@RequestParam(value = "error", required = false) String error,
+		@RequestParam(value = "logout", required = false) String logout) {
+
+		ModelAndView model = new ModelAndView();
+		if (error != null) {
+			model.addObject("error", "Invalid username and password!");
+		}
+
+		if (logout != null) {
+			model.addObject("msg", "You've been logged out successfully.");
+		}
+		model.setViewName("login");
+
+		return model;
+
 	}
-	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public String showNewUserRegisterForm(HttpServletRequest request, Model model) {
-		return "NewUser";
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public void logout(HttpServletRequest req, HttpServletResponse resp) {
+		try {
+			req.logout();
+			resp.sendRedirect("/SBB_project_core/login?logout");
+		} catch (Exception e) {
+			LOG.error(e.getStackTrace());
+		} 
 	}
 	@RequestMapping(value = "/menu", method = RequestMethod.POST)
     public String validateUser(HttpServletRequest request, Model model) {
@@ -68,8 +93,8 @@ public class SpringController {
 		try {
 			user = (UserExist)dispatcher.service(userInfo);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (user.isExist()){
 			LOG.info("User " + login + " logged in");
@@ -82,33 +107,37 @@ public class SpringController {
 			return "Auth";
 		}
 	}
-	@RequestMapping(value = "/menu", method = RequestMethod.GET)
+	@RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
     public String returnToMenu(HttpServletRequest request, Model model) {
 		return "Menu";
 	}
+	@RequestMapping(value = "/newUserForm", method = RequestMethod.GET)
+	public String newUserForm(HttpServletResponse resp) {
+		return "NewUser";
+	}
 	@RequestMapping(value = "/newUser", method = RequestMethod.POST)
     public String newUser(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password1");
 		NewUserInfo userInfo = new NewUserInfo(username, password);
 		UserExist user = null;
 		try {
 			user = (UserExist)dispatcher.service(userInfo);
+		
+			if (!user.isExist()){
+				LOG.info("User "+username+" has been registered");
+				request.login(username, password);
+				return "Menu";
+			}else{
+				model.addAttribute("error", "This username is alerady used");
+				return "NewUser";
+			}
 		} catch (Exception e) {
-			LOG.error(e);
-		}
-		if (!user.isExist()){
-			LOG.info("User "+username+" has been registered");
-			session.setAttribute("user", username);
-			session.setAttribute("admin", user.isAdmin());
-			return "Menu";
-		}else{
-			model.addAttribute("error", "This username is alerady used");
-			return "NewUser";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 	}
-	@RequestMapping(value = "/schedule", method = RequestMethod.POST)
+	@RequestMapping(value = "/schedule", method = RequestMethod.GET)
     public String getSchedule(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();	
 		session.removeAttribute("allStations");
@@ -116,7 +145,7 @@ public class SpringController {
 		try {
 			container = (StationContainer)dispatcher.service(container);
 		} catch (Exception e) {
-			LOG.error(e);
+			LOG.error(e.getStackTrace());
 		}
 		if (!container.getStations().isEmpty())
 			session.setAttribute("allStations", container.getStations());
@@ -137,8 +166,8 @@ public class SpringController {
 		try {
 			info = (JourneysInfo)dispatcher.service(sts);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (info.getJourneyStringData() == null){
 			model.addAttribute("error", true);
@@ -170,8 +199,8 @@ public class SpringController {
 		try {
 			journey = (ChoosedJourney)dispatcher.service(journey);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		session.setAttribute("journeyData", journey.getJourneyId());
 		session.setAttribute("emptySeats", journey.getEmptySeats());
@@ -194,8 +223,8 @@ public class SpringController {
 		try {
 			ticketInfo = (TicketInfo) dispatcher.service(passengerInfo);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (ticketInfo.isExist()){
 			model.addAttribute("error", true);
@@ -205,7 +234,7 @@ public class SpringController {
 			return "NewTicket";
 		}
 	}
-	@RequestMapping(value = "/stationsChoosing", method = RequestMethod.POST)
+	@RequestMapping(value = "/stationsChoosing", method = RequestMethod.GET)
     public String findJourney(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
 		session.removeAttribute("allStations");
@@ -213,37 +242,30 @@ public class SpringController {
 		try {
 			container = (StationContainer)dispatcher.service(container);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (!container.getStations().isEmpty())
 		session.setAttribute("allStations", container.getStations());
 		return "stationChoose";
 	}
-	@RequestMapping(value = "/myTickets", method = RequestMethod.POST)
+	@RequestMapping(value = "/myTickets", method = RequestMethod.GET)
     public String checkTickets(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		String user = (String)session.getAttribute("user");
+		
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
 		UserLoginContainer userLogin = new UserLoginContainer(user);
 		ListOfTickets info;
 		try {
 			info = (ListOfTickets) dispatcher.service(userLogin);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		model.addAttribute("tickets", info.getTicketsInfo());
 		return "tickets";
 	}
-	@RequestMapping(value="/out", method = RequestMethod.POST)
-	public String out(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		session.removeAttribute("user");
-		session.removeAttribute("admin");
-		session.removeAttribute("logged");
-		return "Auth";
-	}
-	@RequestMapping(value="/newRoute", method = RequestMethod.POST)
+	
+	@RequestMapping(value="/newRoute", method = RequestMethod.GET)
 	public String createRoute(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
 		session.removeAttribute("allStations");
@@ -251,8 +273,8 @@ public class SpringController {
 		try {
 			container = (StationContainer)dispatcher.service(container);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (!container.getStations().isEmpty())
 		session.setAttribute("allStations", container.getStations());
@@ -292,8 +314,8 @@ public class SpringController {
 		try {
 			route = (RouteStationList) dispatcher.service(station);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		session.setAttribute("newRoute", route.getRoute());
 		return "StationAdding";
@@ -307,8 +329,8 @@ public class SpringController {
 		try {
 			directionData = (DirectionData) dispatcher.service(route);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		session.setAttribute("requiredDirectionData", directionData.getDirections());
 		return "inputDirections";
@@ -333,8 +355,8 @@ public class SpringController {
 			summary = (NewRouteSummary) dispatcher.service
 					(new RequiredDataForNewRoute(newRoute, newDirections, data, routename));
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (summary.getSummary() == null){
 			model.addAttribute("error", true);
@@ -350,18 +372,17 @@ public class SpringController {
 	}
 	
 	@RequestMapping(value="/newTrain", method = RequestMethod.POST)
-	public String createTrain(HttpServletRequest request, Model model) {
+	public void createTrain(HttpServletRequest request, HttpServletResponse resp) {
 		String trainCapacity = request.getParameter("seats");
 		NewTrainInfo train = new NewTrainInfo(trainCapacity);
 		try {
 			dispatcher.service(train);
+			resp.sendRedirect("/SBB_project_core/");
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
 		}
-		return "Menu";
 	}
-	@RequestMapping(value="/routesInfo", method = RequestMethod.POST)
+	@RequestMapping(value="/routesInfo", method = RequestMethod.GET)
 	public String getRoutesInfo(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
 		session.removeAttribute("routes");
@@ -369,8 +390,8 @@ public class SpringController {
 		try {
 			routes = (AllRoutesInfo) dispatcher.service(routes);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		session.setAttribute("routes", routes.getRoutes());
 		return "ChoosingRoute";
@@ -384,8 +405,8 @@ public class SpringController {
 		try {
 			journey = (NewJourneyInfo) dispatcher.service(journey);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (journey.getDate()==""||journey.getTime()==""){
 			model.addAttribute("err", true);
@@ -406,7 +427,7 @@ public class SpringController {
 			return "CreatingJourneySuccess";
 		}
 	}
-	@RequestMapping(value="/newStationForm", method = RequestMethod.POST)
+	@RequestMapping(value="/newStationForm", method = RequestMethod.GET)
 	public String showNewStationForm(HttpServletRequest request, Model model) {
 		return "StationCreator";
 	}
@@ -417,8 +438,8 @@ public class SpringController {
 		try {
 			info = (NewStationInfo) dispatcher.service(info);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (info.isExist()){
 			model.addAttribute("err", true);
@@ -427,7 +448,7 @@ public class SpringController {
 			return "Menu";
 		}
 	}
-	@RequestMapping(value="/journeyList", method = RequestMethod.POST)
+	@RequestMapping(value="/journeyList", method = RequestMethod.GET)
 	public String getJourneyList(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
 		session.removeAttribute("journeys");
@@ -435,8 +456,8 @@ public class SpringController {
 		try {
 			info = (AllJourneysInfo) dispatcher.service(info);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		session.setAttribute("journeys", info.getJourneys());
 		return "JourneyChoosing";
@@ -448,8 +469,8 @@ public class SpringController {
 		try {
 			journey = (JourneyAndPassengers) dispatcher.service(journey);
 		} catch (Exception e) {
-			LOG.error(e);
-			return "ErrorPage";
+			LOG.error(e.getStackTrace());
+			return "500";
 		}
 		if (journey.getPassInfo()==null){
 			model.addAttribute("err", true);
@@ -460,30 +481,35 @@ public class SpringController {
 			return "Passengers";
 		}
 	}
-	@RequestMapping(value="/resetDB", method = RequestMethod.POST)
-	public String resetDB(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		if (session.getAttribute("user") != null)
+	@RequestMapping(value="/resetDB", method = RequestMethod.GET)
+	public void resetDB(HttpServletResponse resp) {
+		if (isAdmin())
 			try {
 				dispatcher.service(new ResetRequest());
+				resp.sendRedirect("/SBB_project_core/");
 			} catch (Exception e) {
-				LOG.error(e);
-				return "ErrorPage";
+				LOG.error(e.getStackTrace());
 			}
-		return "Menu";
 	}
-	@RequestMapping(value="/initDB", method = RequestMethod.POST)
-	public String initDB(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		if (session.getAttribute("user") != null)
+	@RequestMapping(value="/initDB", method = RequestMethod.GET)
+	public void initDB(HttpServletResponse resp) {
+		if (isAdmin())
 			try { 
 				dispatcher.service(new InitDBRequest());
+				resp.sendRedirect("/SBB_project_core/");
 			} catch (Exception e) {
 				LOG.error(e.getStackTrace());
 				
-				e.printStackTrace();
-				return "ErrorPage";
 			}
-		return "Menu";
+	}
+	
+	public boolean isAdmin() {
+		boolean hasRole = false;
+		for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+			if (authority.getAuthority().equals("ROLE_ADMIN")) {
+				hasRole = true;
+			}
+		}
+		return hasRole;
 	}
 }

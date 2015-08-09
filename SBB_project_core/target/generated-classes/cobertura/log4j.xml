@@ -4,7 +4,7 @@
 <log4j:configuration >
 
     <appender name="ERROR-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_core\\logs\\error.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\error.log"/>
         <param name="maxFileSize" value="10MB" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
@@ -15,7 +15,7 @@
         </filter>
     </appender>
     <appender name="DEBUG-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_core\\logs\\debug.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\debug.log"/>
         <param name="maxFileSize" value="10MB" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
@@ -28,7 +28,7 @@
 	
    
     <appender name="INFO-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_core\\logs\\info.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\info.log"/>
         <param name="maxFileSize" value="10MB" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
@@ -40,7 +40,7 @@
     </appender>
 
     <appender name="LOG-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_core\\logs\\all.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_core\\logs\\all.log"/>
         <param name="maxFileSize" value="10MB" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %c %m at %l%n"/>

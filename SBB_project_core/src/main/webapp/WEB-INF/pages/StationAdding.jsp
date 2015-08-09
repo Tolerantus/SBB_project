@@ -14,18 +14,20 @@
 <script type="text/javascript" src = <c:url value='/resources/StationAdding.js'/>></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Add new stations</title>
+<title>New stations - SBB</title>
 </head>
 <body>
 
-<c:if test="${user!=null}">
-<c:if test="${admin==true }">
+<c:if test="${pageContext.request.userPrincipal.name != null}">
+<%-- <c:if test="${admin==true }"> --%>
 <div id="top-menu">
-	<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
-	<div >
+	<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div><div >
 		<div id="menu">
-			<c:url var="menuURL" value="/menu"/>
-			<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+			
+			<a href="<c:url  value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 		</div>
 	</div>
 </div>
@@ -40,9 +42,9 @@
 	<img alt="" src=<c:url value='/resources/images/stop.png'/> class="flag">
 </div>
 <div align="center">
-<c:url var="insertStationURL" value="/newRoute/newStartAndFinish/newStation"/>
-<form action="${insertStationURL }" method="post" name="add" id="addForm">
-<input type="hidden" name="action" value="INSERT_STATION">
+
+<form action="<c:url value="/newRoute/newStartAndFinish/newStation"/>" method="post" name="add" id="addForm">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	
 	<div id="selector">
 				<select id="step" name="step">
@@ -69,9 +71,9 @@
 	</div>	
 </form >
 </div>
-<c:url var="inputTimeURL" value="/newRoute/newStartAndFinish/timeAndCost"/>
-<form action="${inputTimeURL }" method="post" name="getTime">
-	<input type="hidden" name="action" value="GET_TIME_AND_COST">
+
+<form action="<c:url value='/newRoute/newStartAndFinish/timeAndCost'/>" method="post" name="getTime">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 	
 <div class="actions">
@@ -86,18 +88,18 @@
 	
 	
 </c:if>
-<c:if test="${admin==false }">
+<%-- <c:if test="${admin==false }">
 <h3 align="center" style="color:red">You do not have permission to view this page!</h3>
 	<form action="${menuURL }">
 	<input type="submit" class="submit" value="Login">
 	</form>
 </c:if>
-</c:if>
-<c:if test="${user==null}">
+</c:if> --%>
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
+		
+		<form action="<c:url value="/login"/>">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

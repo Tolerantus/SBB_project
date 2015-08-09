@@ -12,24 +12,27 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
 
-<title>Passenger registration</title>
+<title>Passenger registration - SBB</title>
 </head>
 <body>
-<c:if test="${user!=null}">
+<c:if test="${pageContext.request.userPrincipal.name != null}">
 
-<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
-<div >
+<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div><div >
 	<div id="menu">
-		<c:url var="menuUrl" value="/menu"/>
-		<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+		
+		<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 	</div>
 </div>
 <c:if test="${emptySeats !=null}">
 	<c:if test="${emptySeats>0}">
 		<h1 align="center">${emptySeats} seats available on this train</h1>
-		<c:url var="regPasURL" value="/appropriateJourneys/buyTicket/passenger"/>
+		
 		<div class="wrapper">
-			<form action="${regPasURL }" name="persData" method="post">
+			<form action="<c:url value="/appropriateJourneys/buyTicket/passenger"/>" name="persData" method="post">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<input type="hidden" name="action" value="REGISTER_PASSENGER">
 				
 					<c:if test="${error}">
@@ -90,11 +93,11 @@
 </div>
 	
 </c:if>
-<c:if test="${user==null}">
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
+		
+		<form action="<c:url value="/login"/>">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

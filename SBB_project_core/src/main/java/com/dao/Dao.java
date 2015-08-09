@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.entities.Direction;
@@ -29,11 +30,12 @@ import com.entities.Ticket;
 import com.entities.Train;
 import com.entities.User;
 import com.entities.UserAndTicket;
+import com.entities.UserRole;
 
 @Repository("dao")
 public class Dao {
 private Random random = new Random(47);
-@Autowired
+@Resource(name="sessionFactory")
 private SessionFactory sessionFactory;
 
 public Date getDate() {
@@ -549,18 +551,29 @@ public void clearPassengers() {
 		session.delete(p);
 	}
 }
-public User createUser( String login,  String password,  boolean accountType) {
+public User createUser( String login,  String password,  boolean accountType, Set<String> stringRoles) {
 	Session session = sessionFactory.getCurrentSession();
 	User u = new User();
 	u.setUserLogin(login);
 	u.setUserPassword(password);
 	u.setAccountType(accountType);
+	Set<UserRole> roles = new HashSet<UserRole>();
+	for (String role : stringRoles) {
+		UserRole userRole = new UserRole();
+		userRole.setRole(role);
+		userRole.setUser(u);
+		session.save(userRole);
+		roles.add(userRole);
+	}
+	u.setUserRole(roles);
 	session.save(u);
 	return u;
 }
-public   void initUsers() {
+public void initUsers() {
 	clearUsers();
-	createUser("root@root.ru", "root", true);
+	
+	Set<String> role = new HashSet<String>(); role.add("ROLE_ADMIN");
+	createUser("root@root.ru", "root", true, role);
 }
 
 public User getUser( int userId) {
@@ -818,4 +831,11 @@ public void initDatabase() throws ParseException{
 	initUsers();
 	initTickets();
 }
+public SessionFactory getSessionFactory() {
+	return sessionFactory;
+}
+public void setSessionFactory(SessionFactory sessionFactory) {
+	this.sessionFactory = sessionFactory;
+}
+
 }
