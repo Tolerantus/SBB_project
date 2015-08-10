@@ -17,7 +17,6 @@
 		<logout logout-url="/logout"
 				logout-success-url="/login" 
 				/>
-		<!-- <access-denied-handler error-page="/403" /> -->
 		
 		<intercept-url pattern="/newRoute/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/creatingTrain" access="hasRole('ROLE_ADMIN')"/>
@@ -28,19 +27,17 @@
 		<intercept-url pattern="/journeyList/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/resetDB" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/initDB" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/menu" access="isAuthenticated()"/>
-		<intercept-url pattern="/schedule" access="isAuthenticated()"/>
-		<intercept-url pattern="/appropriateJourneys/**" access="isAuthenticated()"/>
-		<intercept-url pattern="/stationsChoosing" access="isAuthenticated()"/>
-		<intercept-url pattern="/myTickets" access="isAuthenticated()"/>
-		<intercept-url pattern="/out" access="isAuthenticated()"/>
-		<intercept-url pattern="/" access="isAuthenticated()"/>
+		<intercept-url pattern="/menu" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/schedule" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/appropriateJourneys/**" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/stationsChoosing" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/myTickets" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/out" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
 	</http>
 	<beans:bean id="userService" class="com.security.UserService"/>
-	
 	<authentication-manager>
 	  <authentication-provider user-service-ref="userService">
 	  </authentication-provider>
 	</authentication-manager>
-	<beans:import resource="hibernate-context.xml"/>
 </beans:beans>

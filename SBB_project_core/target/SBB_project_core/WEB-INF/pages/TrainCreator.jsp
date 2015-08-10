@@ -11,23 +11,26 @@
 
 <script type="text/javascript" src=<c:url value='/resources/TrainCreator.js'/>></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Train creator</title>
+<title>New train - SBB</title>
 </head>
 <body>
-<c:if test="${user!=null}">
-<c:if test="${admin==true }">
+<c:if test="${pageContext.request.userPrincipal.name != null}">
+<%-- <c:if test="${admin==true }"> --%>
 <div id="top-menu">
-	<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
-	<div >
+<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div>	<div >
 		<div id="menu">
-			<c:url var="menuURL" value="/menu"/>
-			<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+			
+			<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 		</div>
 	</div>
 </div>
 <h1>Train creator</h1>
 <c:url var="createTrainURL" value="/newTrain"/>
 <form action="${createTrainURL }" name='creator' method="post">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 <input type="hidden" name="action" value="CREATE_TRAIN">
 <div id="creator">
 		<div align="center">
@@ -53,18 +56,18 @@
 	
 	
 	</c:if>
-<c:if test="${admin==false }">
+<%-- <c:if test="${admin==false }">
 <h3 align="center" style="color:red">You do not have permission to view this page!</h3>
 	<form action="${menuURL }">
 	<input type="submit" class="submit" value="Login">
 	</form>
 </c:if>
-</c:if>
-<c:if test="${user == null}">
+</c:if> --%>
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
+		
+		<form action="<c:url value="/login"/>">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

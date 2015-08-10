@@ -10,5 +10,6 @@
   	<module>SBB_project_dto</module>
     <module>SBB_project_core</module>
     <module>SBB_project_client</module>
+    <module>SBB_project_mail</module>
   </modules>
 </project>

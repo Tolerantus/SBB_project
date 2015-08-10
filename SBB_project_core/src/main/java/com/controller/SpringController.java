@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.dto.AllJourneysInfo;
 import com.dto.AllRoutesInfo;
 import com.dto.ChoosedJourney;
+import com.dto.CodeRole;
 import com.dto.DirectionData;
 import com.dto.HoursMinutesCost;
 import com.dto.InitDBRequest;
@@ -46,6 +48,7 @@ import com.dto.TicketInfo;
 import com.dto.UserExist;
 import com.dto.UserInfo;
 import com.dto.UserLoginContainer;
+import com.entities.UserAccessCode;
 import com.service.Dispatcher;
 
 
@@ -55,12 +58,59 @@ public class SpringController {
 	@Autowired
 	private Dispatcher dispatcher;
 	
+
+	@RequestMapping(value = "/userVerification/{accessCode}")
+	public void activateUserAccount(@PathVariable String accessCode, HttpServletResponse resp) {
+		UserAccessCode userAccessCode = new UserAccessCode();
+		userAccessCode.setCode(accessCode);
+		CodeRole codeRole = new CodeRole();
+		codeRole.setUserAccessCode(userAccessCode); 
+		codeRole.setAdmin(false);
+		try {
+			CodeRole result = (CodeRole) dispatcher.service(codeRole);
+			
+			if (result.getUserAccessCode().getUser() != null) {
+				resp.sendRedirect("../login?mail");
+			} else {
+				resp.sendRedirect("../login?wrongCode");
+			}
+		} catch (Exception e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	@RequestMapping(value = "/adminVerification/{accessCode}")
+	public void activateAdminAccount(@PathVariable String accessCode, HttpServletResponse resp) {
+		UserAccessCode userAccessCode = new UserAccessCode();
+		userAccessCode.setCode(accessCode);
+		CodeRole codeRole = new CodeRole();
+		codeRole.setUserAccessCode(userAccessCode); 
+		codeRole.setAdmin(true);
+		try {
+			codeRole = (CodeRole) dispatcher.service(codeRole);
+			if (codeRole.getUserAccessCode().getUser() != null) {
+				resp.sendRedirect("../login?checkEmail");
+			} else {
+				resp.sendRedirect("../login?wrongCode");
+			}
+		} catch (Exception e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+	}
+	
 	
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login(
 		@RequestParam(value = "error", required = false) String error,
-		@RequestParam(value = "logout", required = false) String logout) {
+		@RequestParam(value = "logout", required = false) String logout,
+		@RequestParam(value = "mail", required = false) String mail,
+		@RequestParam(value = "wrongCode", required = false) String wrongCode,
+		@RequestParam(value = "checkEmail", required = false) String checkEmail,
+		@RequestParam(value = "internalError", required = false) String internalError) {
 
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
@@ -69,6 +119,22 @@ public class SpringController {
 
 		if (logout != null) {
 			model.addObject("msg", "You've been logged out successfully.");
+		}
+		
+		if (mail != null) {
+			model.addObject("msg", "E-mail was verified.");
+		}
+		
+		if (wrongCode != null) {
+			model.addObject("error", "Wrong access code");
+		}
+		
+		if (checkEmail != null) {
+			model.addObject("msg", "Check your e-mail for confirmation letter.");
+		}
+		
+		if (internalError != null) {
+			model.addObject("err", "Internal server error.");
 		}
 		model.setViewName("login");
 
@@ -82,8 +148,12 @@ public class SpringController {
 			resp.sendRedirect("/SBB_project_core/login?logout");
 		} catch (Exception e) {
 			LOG.error(e.getStackTrace());
+			throw new RuntimeException(e);
 		} 
 	}
+	
+	
+	
 	@RequestMapping(value = "/menu", method = RequestMethod.POST)
     public String validateUser(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
@@ -117,7 +187,7 @@ public class SpringController {
 		return "NewUser";
 	}
 	@RequestMapping(value = "/newUser", method = RequestMethod.POST)
-    public String newUser(HttpServletRequest request, Model model) {
+    public void newUser(HttpServletRequest request, HttpServletResponse resp, Model model) {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password1");
 		NewUserInfo userInfo = new NewUserInfo(username, password);
@@ -127,15 +197,14 @@ public class SpringController {
 		
 			if (!user.isExist()){
 				LOG.info("User "+username+" has been registered");
-				request.login(username, password);
-				return "Menu";
+				resp.sendRedirect("/SBB_project_core/login?checkEmail");;
 			}else{
 				model.addAttribute("error", "This username is alerady used");
-				return "NewUser";
+				resp.sendRedirect("/SBB_project_core/newUserForm");
 			}
 		} catch (Exception e) {
 			LOG.error(e.getStackTrace());
-			return "500";
+			throw new RuntimeException(e);
 		}
 	}
 	@RequestMapping(value = "/schedule", method = RequestMethod.GET)

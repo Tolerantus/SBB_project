@@ -18,20 +18,24 @@
 
 
 <body>
-<c:url var="buyTicketURL" value="/appropriateJourneys/buyTicket"/>
-<c:if test="${user != null}">
+
+<c:if test="${pageContext.request.userPrincipal.name != null}">
 <div id="top-menu">
-	<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
+	<div class="user">
+		<img alt="" src=<c:url value='/resources/images/1.png'/>>
+		<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+	</div>
 	<div class="menu">
 		<div id="menu">
-			<c:url var="menuURL" value="/menu"/>
-			<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+			<a href="<c:url value="/menu"/>">
+			<img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 		</div>
 	</div>
 </div>
 <h1>Journeys from station "${st_dep }" to station "${st_arr }"</h1>
 <c:if test="${journeysData != null}">
-<form action="${buyTicketURL }" method="post" name="jours">
+<form action="<c:url value="/appropriateJourneys/buyTicket"/>" method="post" name="jours">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 <table id="t">
 <thead>
 	<tr>
@@ -92,13 +96,16 @@ for (String s : data){String[] tokens = s.split(";");%>
 <c:if test="${journeysData == null}">
 <script type="text/javascript">$('#next').hide();</script>
 </c:if>
-<c:url var="journeysURL" value="/schedule/journeys"/>
-<form action="${journeysURL }" method="post" name="back"></form>
+
+<form action="<c:url value="/schedule/journeys"/>" method="post" name="back">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 </c:if>
-<c:if test="${user==null}">
+
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<form action="Auth.jsp">
+		<form action="<c:url value='/login' />">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

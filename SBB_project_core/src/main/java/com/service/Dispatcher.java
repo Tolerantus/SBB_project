@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.dto.AllJourneysInfo;
 import com.dto.AllRoutesInfo;
 import com.dto.ChoosedJourney;
+import com.dto.CodeRole;
 import com.dto.InitDBRequest;
 import com.dto.JourneyAndPassengers;
 import com.dto.NewJourneyInfo;
@@ -23,6 +24,7 @@ import com.dto.StationsForSheduling;
 import com.dto.TicketContainer;
 import com.dto.UserInfo;
 import com.dto.UserLoginContainer;
+import com.mail.UserActivator;
 @Service("dispatcher")
 public class Dispatcher {
 	private CheckUser checkUser; 
@@ -45,6 +47,7 @@ public class Dispatcher {
 	private Resetter resetter;
 	private DBInitializer dbInitializer;
 	private TicketService ticketService;
+	private UserActivator userActivator;
 	
 	public  Object service(Object dto) throws Exception{
 		if (dto instanceof UserInfo){
@@ -106,6 +109,9 @@ public class Dispatcher {
 		} else
 		if (dto instanceof TicketContainer) {
 			return ticketService.dispatch((TicketContainer) dto);
+		} else 
+		if (dto instanceof CodeRole) {
+			return userActivator.activateUser((CodeRole) dto);
 		}
 	return null;
 	}
@@ -191,5 +197,11 @@ public class Dispatcher {
 	public void setTicketService(TicketService ticketService) {
 		this.ticketService = ticketService;
 	}
+	@Autowired
+	public void setUserActivator(UserActivator userActivator) {
+		this.userActivator = userActivator;
+	}
+	
+	
 	
 }

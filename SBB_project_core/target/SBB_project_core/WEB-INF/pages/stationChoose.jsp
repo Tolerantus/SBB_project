@@ -10,24 +10,26 @@
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <link rel="stylesheet" href=<c:url value='/resources/stationChoose.css'/>>
-<title>Station choosing</title>
+<title>Station choosing - SBB</title>
 </head>
 <body>
-<c:if test="${user!=null}">
+<c:if test="${pageContext.request.userPrincipal.name != null}">
 <div id="top-menu">
-	<div class="user"><img alt="" src=<c:url value='/resources/images/1.png'/>><span class="user"><%=session.getAttribute("user")%></span></div>
-	<div >
+	<div class="user">
+	<img alt="" src=<c:url value='/resources/images/1.png'/>>
+	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
+</div><div >
 		<div id="menu">
-			<c:url var="menuURL" value="/menu"/>
-			<a href="${menuURL }"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
+			
+			<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
 		</div>
 	</div>
 </div>
 	<h2>Choose station</h2>
-	<c:url var="getApJourURL" value="/appropriateJourneys"/>
+	
 	<div class="wrapper" align="center">
-		<form action="${getApJourURL }" method="post" name="stations">
-		<input type="hidden" name="action" value="GET_APPROPRIATE_JOURNEYS">
+		<form action="<c:url value='/appropriateJourneys'/>" method="post" name="stations">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		
 		<c:if test="${simpleShedule == null}">
 		<div class="selector" align="center">
@@ -101,11 +103,10 @@
 
 
 </c:if>
-<c:if test="${user==null}">
+<c:if test="${pageContext.request.userPrincipal.name == null}">
 	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
 	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
+		<form action="<c:url value='/login'/>">
 			<input type="submit" class="submit" value="Login">
 		</form>
 	</div>

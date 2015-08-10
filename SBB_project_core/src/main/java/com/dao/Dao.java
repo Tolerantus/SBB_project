@@ -29,6 +29,7 @@ import com.entities.Station;
 import com.entities.Ticket;
 import com.entities.Train;
 import com.entities.User;
+import com.entities.UserAccessCode;
 import com.entities.UserAndTicket;
 import com.entities.UserRole;
 
@@ -74,7 +75,55 @@ public  void clearTrains() {
 		session.delete(t);
 	}
 }
+public UserAccessCode createUserAccessCode(User user, String code) {
+	Session session = sessionFactory.getCurrentSession();
+	UserAccessCode userAccessCode = new UserAccessCode();
+	userAccessCode.setUser(user);
+	userAccessCode.setCode(code);
+	session.save(userAccessCode);
+	return userAccessCode;
+}
 
+@SuppressWarnings("unchecked")
+public User getUserByAccessCode(String accessCode) {
+	Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from UserAccessCode as uac where uac.code=:param");
+	query.setParameter("param", accessCode);
+	List<UserAccessCode> accessCodes = query.list();
+	if (accessCodes.size() == 0) {
+		return null;
+	} else 
+	if (accessCodes.size() > 1) {
+		throw new RuntimeException();
+	} else {
+		return accessCodes.get(0).getUser();
+	}
+}
+@SuppressWarnings("unchecked")
+public UserAccessCode getUserAccessCode(User user) {
+	Session session = sessionFactory.getCurrentSession();
+	List<UserAccessCode> accessCodes = session.createQuery("from UserAccessCode as c where c.user.userId=" + user.getUserId()).list();
+	if (accessCodes.size() != 1) {
+		throw new RuntimeException();
+	}
+	return accessCodes.get(0);
+}
+
+public UserAccessCode deleteUserAccessCode(User user) {
+	Session session = sessionFactory.getCurrentSession();
+	UserAccessCode accessCode = getUserAccessCode(user);
+	session.delete(accessCode);
+	return accessCode;
+}
+
+@SuppressWarnings("unchecked")
+public void clearAccessCodes() {
+	Session session = sessionFactory.getCurrentSession();
+	List<UserAccessCode> accessCodes = session.createQuery("from UserAccessCode").list();
+	for (UserAccessCode code : accessCodes) {
+		session.delete(code);
+	}
+}
 public Station createStation(String name) {
 	Session session = sessionFactory.getCurrentSession();
 	Station station = new Station();
@@ -113,10 +162,9 @@ public  Station getStationByName(String name) {
 	
 }
 
-
-
 @SuppressWarnings("unchecked")
 public  Set<Station> getAllStationsOnRoute( int routeId) {
+
 	Session session = sessionFactory.getCurrentSession();
 	Set<Station> stations = new HashSet<Station>();
 	Query query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId);
@@ -131,6 +179,7 @@ public  Set<Station> getAllStationsOnRoute( int routeId) {
 	
 	return stations;
 }
+
 public  void deleteStation( int stationId) {
 	Session session = sessionFactory.getCurrentSession();
 	Station s = (Station) session.load(Station.class, stationId);
@@ -168,6 +217,7 @@ public  Direction createDirection( Station stDep,  Station stArr,  long time,  d
 
 @SuppressWarnings("unchecked")
 public  Direction getDirectionByStartFinish( int start,  int finish){
+
 	Session session = sessionFactory.getCurrentSession();
 	Query query = session.createQuery("from Direction as d where d.stDep.stationId=" + start + " and d.stArr.stationId=" + finish);
 	List<Direction> directions = query.list();
@@ -551,12 +601,23 @@ public void clearPassengers() {
 		session.delete(p);
 	}
 }
+
 public UserRole createUserRole(String role) {
 	Session session = sessionFactory.getCurrentSession();
 	UserRole userRole = new UserRole(); userRole.setRole(role);
 	session.save(userRole);
 	return userRole;
 }
+
+public void setUserAs(User user, String role) {
+	Session session = sessionFactory.getCurrentSession();
+	UserRole userRole = getRoleByString(role);
+	Set<UserRole> userRoles = new HashSet<UserRole>();
+	userRoles.add(userRole);
+	user.setUserRole(userRoles);
+	session.update(user);
+}
+
 public UserRole deleteUserRole(int userRoleId) {
 	Session session = sessionFactory.getCurrentSession();
 	UserRole userRole = (UserRole) session.get(UserRole.class, userRoleId);
@@ -599,10 +660,12 @@ public User createUser( String login,  String password,  boolean accountType, Se
 	return u;
 }
 public void initUsers() {
+	clearAccessCodes();
 	clearUsers();
 	initUserRole();
-	UserRole userRole = getRoleByString("ROLE_ADMIN");
-	Set<UserRole> rootRole = new HashSet<UserRole>(); rootRole.add(userRole);
+	UserRole adminRole = getRoleByString("ROLE_ADMIN");
+	UserRole userRole = getRoleByString("ROLE_USER");
+	Set<UserRole> rootRole = new HashSet<UserRole>(); rootRole.add(userRole); rootRole.add(adminRole);
 	createUser("root@root.ru", "root", true, rootRole);
 }
 

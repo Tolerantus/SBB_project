@@ -18,7 +18,7 @@ import com.entities.Shedule;
 import com.entities.Ticket;
 import com.entities.UserAndTicket;
 
-@Service
+@Service("ticketService")
 public class TicketService {
 	private Dao dao;
 	@Autowired

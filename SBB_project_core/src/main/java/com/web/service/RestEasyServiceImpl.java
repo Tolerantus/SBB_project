@@ -83,7 +83,7 @@ public class RestEasyServiceImpl {
 	}
 	
 	
-
+	
 	public Response buildResponse(Object dto) {
 		Object result = null;
 		try {
