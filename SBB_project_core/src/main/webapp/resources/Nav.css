@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+.drop_menu {
+background:#005555;
+padding:0;
+margin:0;
+list-style-type:none;
+height:30px;
+}
+.drop_menu li { float:left; }
+.drop_menu li a {
+padding:8px 20px;
+display:block;
+color:#fff;
+text-decoration:none;
+font:12px arial, verdana, sans-serif;
+}
+#user {
+color:#fff;
+float:right;
+padding:8px 18px;
+color:#fff;
+text-decoration:none;
+font:12px arial, verdana, sans-serif;}
+#user a{
+display:inline;
+padding:0;
+}
+#user:hover {
+    background-color:red;
+}
+#user a:hover {
+	color:#005555;
+}
+/* Submenu */
+.drop_menu ul {
+position:absolute;
+left:-9999px;
+top:-9999px;
+list-style-type:none;
+}
+.drop_menu li:hover { position:relative; background:red; }
+.drop_menu li:hover ul {
+left:0px;
+top:30px;
+background:#fff;
+padding:0px;
+color:#005555;
+}
+ 
+.drop_menu li:hover ul li a {
+padding:5px;
+display:block;
+width:168px;
+text-indent:15px;
+background-color:red;
+}
+.drop_menu li:hover ul li a:hover { background:#005555; }
+@font-face {
+    font-family: 'eppyevans'; /*a name to be used later*/
+    src: url('fonts/eppyevans.ttf'); /*URL to font*/
+}
+.logo {
+	font-family: 'eppyevans';
+	font-size: 30px;
+	color:#005555;
+	background-color: #fff;
+}
+.logo a{
+	text-decoration: none;
+	color: #005555;
+}
+img{
+	height: 33px;
+	width: 33px;
+	margin-top:2px;
+}

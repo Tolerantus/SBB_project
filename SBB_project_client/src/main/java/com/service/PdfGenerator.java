@@ -21,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
+
 import com.cdi.bean.LoginBean;
 import com.cdi.bean.TicketContainerBean;
 import com.cdi.bean.TicketInformationFilter;
@@ -30,9 +33,12 @@ import com.entities.Ticket;
 import com.entities.User;
 import com.entities.UserAndTicket;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -76,10 +82,14 @@ public class PdfGenerator implements Serializable{
 			Date finish = filter.getFinishDate();
 			PdfPTable header = new PdfPTable(1);
 		    header.setWidthPercentage(100);
-		    Image img = Image.getInstance(
-		    		"C:/Documents/Tsys/E_prjs/SBB_project/SBB_project_client/WebContent/resources/theme/img/tickets-header.jpg");
-		    header.addCell(new PdfPCell(img, true));
-		    doc.add(header);
+		    
+		    FontFactory.register("C:/Documents/Tsys/E_prjs/SBB_project/SBB_project_core/src/main/webapp/resources/fonts/eppyevans.ttf","myFont");
+		    Font myFont = FontFactory.getFont("myFont");
+//		    Image img = Image.getInstance(
+//		    		"C:/Documents/Tsys/E_prjs/SBB_project/SBB_project_client/WebContent/resources/theme/img/logo_sbb.png");
+		    /*header.addCell(new PdfPCell(new Paragraph("SWISS FEDERAL RAILWAYS", myFont)));*/
+//		    doc.add(header);
+		    doc.add(new Paragraph("SBB - project", myFont));
 			if (start != null && finish != null) {
 				timeConstraints = "Tickets sold in period from " + sdf1.format(filter.getStartDate())
 						+ " to " + sdf1.format(finish);

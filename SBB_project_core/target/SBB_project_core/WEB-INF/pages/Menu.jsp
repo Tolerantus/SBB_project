@@ -3,98 +3,74 @@
     <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" href=<c:url value='/resources/Menu.css'/>>
+<link rel="stylesheet" href=<c:url value='/resources/stationChoose.css'/>>
+<link rel="stylesheet" href=<c:url value='/resources/Nav.css'/>>
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<title>Menu</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript" src=<c:url value='/resources/cash.js'/>></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>SBB - Menu</title>
 </head>
 <body>
-
-
-<c:if test="${pageContext.request.userPrincipal.name != null}">
-<div class="user">
-	<img alt="" src=<c:url value='/resources/images/1.png'/>>
-	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
-</div>
-<div class="wrapper">
-	<div class="menu-item">
-		<form action="<c:url value="/schedule"/>" method="get">
-			<input type="submit" value="Show the schedule">
-		</form>
-	</div>
-	<div class="menu-item">
-		<form action="<c:url value="/stationsChoosing"/>" method="get">
-			<input type="submit" name="buy" value="Buy a ticket">
-		</form>
-	</div>
-	<div class="menu-item">
-		<form action="<c:url value="/myTickets"/>" method="get">
-			<input type="submit" name="check" value="Check my tickets">
-		</form>
-	</div>
-	<sec:authorize access="hasRole('ROLE_ADMIN')">
-	<div class="menu-item2">
-		<form action="<c:url value="/newRoute"/>" method="get" name="newRouteForm" id="newRoute" >
-			<input type="submit" value="Create route" >
-		</form>
-	</div>
+<%@ include file="Nav.jsp" %>
+<div id="cover"></div>
+<div class="img_conteiner">
 	
-	<div class="menu-item2">
-		<form action="<c:url value="/creatingTrain"/>" method="get">
-			<input type ="submit" value="Create train"> 
-		</form>
-	</div>
-	
-	<div class="menu-item2">
-		<form action="<c:url value="/routesInfo"/>" method="get">
-			<input type="submit" value="Create journey">
-		</form>
-	</div>
-	
-	<div class="menu-item2">
-		<form action="<c:url value="/newStationForm"/>" method="get">
-			<input type="submit" value="Create station">
-		</form>
-	</div>
-	
-	<div class="menu-item2">
-		<form action="<c:url value="/journeyList"/>" method="get">
-			<input type="submit" value="Show passengers...">
-		</form>
-	</div>
-	
-	<div class="menu-item2">
-		<form action="<c:url value="/resetDB"/>" method="get">
-			<input type="submit" value="Reset DataBase">
-		</form>
-	</div>
-	
-	<div class="menu-item2">
-		<form action="<c:url value="/initDB"/>" method="get">
-			<input type="submit" value="Init DataBase">
-		</form>	
-	</div>
-	</sec:authorize>
-	<%-- </c:if> --%>
-	
-	
-</div>
-</c:if>
-
-
-<c:if test="${pageContext.request.userPrincipal.name == null}">
-	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
-	<div align="center">
+	<div class="figurer">
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-6.jpg" class="image">
+			<figcaption>The Swiss Federal Railways runs a large network of rail connections and helps coordinate a bus system that reaches into just about every corner of Switzerland</figcaption>
+		</figure>
 		
-		<form action="<c:url value="/login"/>">
-			<input type="submit" class="submit" value="Login">
-		</form>
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-5.jpg" class="image">
+			<figcaption>Switzerland: See it! Feel it! Love it!</figcaption>
+		</figure>
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-3.JPG" class="image">
+			<figcaption>
+				A SBB CFF FFS train
+			</figcaption>
+		</figure>
+		
 	</div>
-</c:if>	
+	
+	<div class="figurer">
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-4.jpg" class="image">
+			<figcaption>
+				Samsung Electronics sent out a press release last week saying its gadgets had been chosen for a technology buildout at Swiss Federal Railways.
+			</figcaption>
+		</figure>
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-2.jpg" class="image">
+			<figcaption>
+				The inside of a double deck intercity train
+			</figcaption>
+		</figure>
+		
+		<figure>
+			<img alt="" src="/SBB_project_core/resources/images/train-1.jpg" class="image">
+			<figcaption>
+				InterCity on the Gotthard Line
+			</figcaption>
+		</figure>
+		
+	</div>
+</div>
 
+<script type="text/javascript">
+	$(window).load(function(){
+	    $('#cover').fadeOut(300);
+	    checkCash();
+	});
+</script>
 </body>
 </html>

@@ -19,14 +19,14 @@ public class MailService {
 	private Dao dao;
 	
 	@Transactional
-	public void sendVerificationLetter(User user, boolean isAdmin) {
+	public void sendVerificationLetter(User user) {
 		 SecureRandom random = new SecureRandom();
          String key = new BigInteger(130, random).toString(32);
          dao.createUserAccessCode(user, key);
          String message = "Hello, I'm Aleksandr Klementev and I've sent you this letter to confirm you are not a fraud. "
 	    		   + "Please click the link below to confirm registration in SBB-project or ignore it if you"
 	    		   + " didn't make any actions.  "
-	    		   + getUrl(isAdmin, key);
+	    		   + getUrl(user.isAccountType(), key);
          
          
 		 mailSender.sendMail("sbb.project.mail.sender@gmail.com",

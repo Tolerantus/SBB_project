@@ -3,96 +3,74 @@
     <%@ page import="java.util.List" %>
     <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
-<link rel="stylesheet" href=<c:url value='/resources/tickets.css'/>>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<link rel="stylesheet" href=<c:url value='/resources/stationChoose.css'/>>
+<link rel="stylesheet" href=<c:url value='/resources/Nav.css'/>>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src=<c:url value='/resources/cash.js'/>></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>Tickets - SBB</title>
 </head>
 <body>
-
-<c:if test="${pageContext.request.userPrincipal.name != null}">
-<div id="top-menu">
-<div class="user">
-	<img alt="" src=<c:url value='/resources/images/1.png'/>>
-	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
-</div><div >
-	<div id="menu">
-		
-		<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
-	</div>
+<%@ include file="Nav.jsp" %>
+<div id="cover"></div>
+<div class="wrapper" style="width:auto;">
+	<h2>Your tickets</h2>
+	<c:if test="${tickets ==null }">
+		<h4 style="color:red;">You didn't buy any tickets!</h4>
+	</c:if>
+	<c:if test="${tickets ne null}">
+		<table class="t">
+			<thead>
+				<tr>
+					<th>
+						Ticket №
+					</th>
+					<th>
+						Passenger
+					</th>
+					<th>
+						From
+					</th>
+					<th>
+						Department
+					</th>
+					<th>
+						To
+					</th>
+					<th>
+						Arrival
+					</th>
+					<th>
+						Cost
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="ticket" items="${tickets }">
+					<tr>
+					<c:forTokens items="${ticket }" delims="," var="token">
+						<td>${token }</td>
+					</c:forTokens>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</c:if>
 </div>
-</div>
-<h1>Your tickets</h1>
-<%
-if (request.getAttribute("tickets")==null){
-%>
-<h3 align="center">You didn't buy any tickets!</h3>
-<%
-}else{%>
-<table id="t">
-<thead>
-<tr>
-	<th>
-		Ticket №
-	</th>
-	<th>
-		Passenger
-	</th>
-	<th>
-		From
-	</th>
-	<th>
-		Dep. time
-	</th>
-	<th>
-		To
-	</th>
-	<th>
-		Arr. time
-	</th>
-	<th>
-		Cost
-	</th>
-</tr>
-</thead>
-<%
-List<String> tickets = (List<String>)request.getAttribute("tickets");
-
-for (String s:tickets){
-	String[] data = s.split(",");
-%>
-<tr>
-<%
-	for (String token: data){
-%>
-
-<td>
-<%=token%>
-</td>
-
-<%
-}
-%>
-</tr>
-<%
-}
-}
-%>
-</table>
-
-</c:if>
-<c:if test="${pageContext.request.userPrincipal.name == null}">
-	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
-	<div align="center">
-		
-		<form action="<c:url value="/login"/>">
-			<input type="submit" class="submit" value="Login">
-		</form>
-	</div>
-</c:if>	
-
+<script type="text/javascript">
+	$(window).load(function(){
+	    $('#cover').fadeOut(300);
+	    checkCash();
+	});
+	</script>
 </body>
 </html>

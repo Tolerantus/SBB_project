@@ -5,7 +5,7 @@ function validate(form){
 	$('#name').removeClass('error-box');
 	$('#surname').removeClass('error-box');
 	
-	var patt = new RegExp("^[A-Za-z\-'\s]{1,40}$");
+	var patt = new RegExp("^[A-Za-z\\-'\\s]{1,40}$");
 	var name = $('#name').val();
 	var surname = $('#surname').val();
 	var error = false;
@@ -19,6 +19,7 @@ function validate(form){
 		
 		error = true;
 	}
+	
 	if (!error){
 		form.submit();
 	}

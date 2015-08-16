@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml"    
       xmlns:f="http://java.sun.com/jsf/core"      
@@ -15,7 +14,7 @@
     </h:head>
     <h:body bgcolor="white">
     	<div id="header">
-	 	   	<h:graphicImage library="theme" name="img/glacier_luxury_trains_header1.jpg"/>
+	 	   	<h:graphicImage library="theme" name="img/train.jpg"/>
     	</div>
     	<h2>Login form</h2>
     	<div class="wrapper">
@@ -31,12 +30,11 @@
 			    	<h:message for="password"/>
 		    	</h:panelGrid>
 		    	
+		    		<div style="color:red;"><h:outputText value="#{loginBean.status}"/></div>
 	                <div class="buttonContainer">
-	                	<div><h:outputText value="#{loginBean.status}"/></div>
 	                	<div><h:commandButton action="#{userValidator.validate}" value="LogIn" styleClass="button"/></div>
 	               	</div>
 	               	<div class="buttonContainer"><h:commandButton action="#{loginBean.logOut}" value="LogOut" styleClass="button"/></div>
-	                
 	                
 	            
 	        </h:form>

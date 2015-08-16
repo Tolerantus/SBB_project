@@ -4,8 +4,9 @@
 <log4j:configuration >
 
     <appender name="ERROR-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_client\\logs\\error.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_client\\logs\\error.log"/>
         <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="1"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
         </layout>
@@ -15,8 +16,9 @@
         </filter>
     </appender>
     <appender name="DEBUG-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_client\\logs\\debug.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_client\\logs\\debug.log"/>
         <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="1"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
         </layout>
@@ -28,8 +30,9 @@
 	
    
     <appender name="INFO-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_client\\logs\\info.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_client\\logs\\info.log"/>
         <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="1"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %m at %l%n"/>
         </layout>
@@ -40,8 +43,9 @@
     </appender>
 
     <appender name="LOG-FILE-APPENDER" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project_client\\logs\\all.log"/>
+        <param name="file" value="C:\\Documents\\Tsys\\E_prjs\\SBB_project\\SBB_project_client\\logs\\all.log"/>
         <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="1"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%5p] %c %m at %l%n"/>
         </layout>

@@ -2,75 +2,180 @@
     pageEncoding="utf-8"%>
     <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
-<link rel='stylesheet' href=<c:url value='/resources/TrainCreator.css'/>>
+<link rel='stylesheet' href=<c:url value='/resources/Nav.css'/>>
+<link rel='stylesheet' href=<c:url value='/resources/ValidationError.css'/>>
+<link rel='stylesheet' href=<c:url value='/resources/stationChoose.css'/>>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
-
 <script type="text/javascript" src=<c:url value='/resources/TrainCreator.js'/>></script>
+<script type="text/javascript" src=<c:url value='/resources/CreatingStation.js'/>></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>New train - SBB</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<script type="text/javascript" src=<c:url value='/resources/cash.js'/>></script>
+<title>Station/Train creator - SBB</title>
 </head>
 <body>
-<c:if test="${pageContext.request.userPrincipal.name != null}">
-<%-- <c:if test="${admin==true }"> --%>
-<div id="top-menu">
-<div class="user">
-	<img alt="" src=<c:url value='/resources/images/1.png'/>>
-	<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
-</div>	<div >
-		<div id="menu">
-			
-			<a href="<c:url value="/menu"/>"><img alt="" src=<c:url value='/resources/images/home.png'/>></a>
-		</div>
+<%@ include file="Nav.jsp" %>
+<div id="cover"></div>
+<div id="dialog-message" title=""></div>
+<div class="chunck">
+	<div class="wrapper">
+		<h2>Train creator</h2>
+		<table class="t">
+			<tr>
+				<td>
+					Seats:
+				</td>
+				<td>
+					<select name="seats" id="seats">
+						<option disabled>seats</option>
+						<c:forEach var="i" begin="50" end="200" step="50">
+							<option selected>${i }</option>
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<input type="button" class="submit" value="Create train" id="trainBut">
+	</div>
+	<div class="wrapper">
+		<h2>Station creator</h2>
+		<table class="t">
+			<tr>
+				<td>
+					Station name:
+				</td>
+				<td>
+					<input type="text" id="station" name="station" placeholder="station">
+				</td>
+			</tr>
+		</table>
+		<h4 id="error" style="color:red"></h4>
+		<input type="button" class="submit" value="Create station" id="stationBut">
 	</div>
 </div>
-<h1>Train creator</h1>
-<c:url var="createTrainURL" value="/newTrain"/>
-<form action="${createTrainURL }" name='creator' method="post">
-<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-<input type="hidden" name="action" value="CREATE_TRAIN">
-<div id="creator">
-		<div align="center">
-				Choose number of seats
-		</div>	
-		<div align="center">
-				<select name="seats">
-					<option disabled>seats</option>
-					<c:forEach var="i" begin="50" end="200">
-						<option selected>${i }</option>
-					</c:forEach>
-				</select>
-		</div>
-	</div>
-</form>
 
-	<div align="center">
-	
-			<input class="submit" type="button" value="Create train" onclick="document.forms['creator'].submit()">
-	
-	</div>	
-	
-	
-	
-	</c:if>
-<%-- <c:if test="${admin==false }">
-<h3 align="center" style="color:red">You do not have permission to view this page!</h3>
-	<form action="${menuURL }">
-	<input type="submit" class="submit" value="Login">
-	</form>
-</c:if>
-</c:if> --%>
-<c:if test="${pageContext.request.userPrincipal.name == null}">
-	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
-	<div align="center">
+<script type="text/javascript">
+	$(document).ready(function(){
+		var trainBut = $('#trainBut');
 		
-		<form action="<c:url value="/login"/>">
-			<input type="submit" class="submit" value="Login">
-		</form>
-	</div>
-</c:if>	
+		$(trainBut).click(function(){
+			var seats = $('#seats').val();
+			$.ajax({
+				url:"/SBB_project_core/train",
+				type:"get",
+				data: {seats:seats},
+				beforeSend: function(xhr) {
+					
+					$('#cover').fadeIn(300);
+				},
+				complete: function() {
+					$('#cover').fadeOut(300);
+				},
+				success:function(result) {
+					$('#dialog-message').empty();
+					if (result=="success") {
+						$('#dialog-message').attr("title",'Info');
+						$('span.ui-dialog-title').text("Info");
+						$('#dialog-message').append('Train created. Capacity = ' + seats);
+					} else 
+					if (result=="fail") {
+						$('#dialog-message').attr("title",'Error');
+						$('span.ui-dialog-title').text("Error");
+						$('#dialog-message').append('Creating failed');
+					}
+					
+				$("#dialog-message" ).dialog({
+				      modal: true,
+				      buttons: {
+				        Ok: function() {
+				          $( this ).dialog( "close" );
+				        }
+				      }
+				  });
+				},
+				error: function (jqXHR, text, errorThrown) {
+			        alert(jqXHR + " " + text + " " + errorThrown);
+			    }
+					
+			});
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var stationBut = $('#stationBut');
+		
+		$(stationBut).click(function(){
+			var station = $('#station').val();
+			var patt =  new RegExp("^([A-Z])([a-z\\s]{1,20})[-]?[A-Z]?[a-z\\s]{0,19}[a-z0-9]$");
+			var err = false;
+			$('#station').removeClass('error-box');
+			$('#error').empty();
+			if (!patt.test(station)){
+				$('#station').addClass('error-box');
+				$('#error').text("Name must contain 3-25 symbols {A-Z a-z 0-9}")
+				err=true;
+			}
+			if(!err){
+				$.ajax({
+					url:"/SBB_project_core/station",
+					type:"get",
+					data: {station:station},
+					beforeSend: function(xhr) {
+						
+						$('#cover').fadeIn(300);
+					},
+					complete: function() {
+						$('#cover').fadeOut(300);
+					},
+					success:function(status) {
+						$('#dialog-message').empty();
+						if (status == "exist"){
+							$('#dialog-message').attr("title",'Info');
+							$('span.ui-dialog-title').text("Info");
+							$('#dialog-message').append('This stations is already exist.');
+						} else 
+						if (status=="fail"){
+							$('#dialog-message').attr("title",'Error');
+							$('span.ui-dialog-title').text("Error");
+							$('#dialog-message').append("Creating failed");
+						} else {
+								$('#dialog-message').attr("title",'Info');
+								$('#ui-id-1').text("Info");
+								$('#dialog-message').append('Station "' + station + '"  created. ');
+						}
+						
+						$("#dialog-message" ).dialog({
+					      modal: true,
+					      buttons: {
+					        Ok: function() {
+					          $( this ).dialog( "close" );
+					        }
+					      }
+					  });
+					},
+					error: function (jqXHR, text, errorThrown) {
+				        alert(jqXHR + " " + text + " " + errorThrown);
+				    }
+				});
+			}
+			
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(window).load(function(){
+	    $('#cover').fadeOut(300);
+	    checkCash();
+	});
+</script>
 </body>
 </html>

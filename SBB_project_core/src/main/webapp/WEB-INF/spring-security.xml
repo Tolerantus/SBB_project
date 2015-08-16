@@ -17,23 +17,30 @@
 		<logout logout-url="/logout"
 				logout-success-url="/login" 
 				/>
-		
-		<intercept-url pattern="/newRoute/**" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/creatingTrain" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/newTrain" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/routesInfo/**" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/newStationForm/**" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/newStation/**" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/journeyList/**" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/resetDB" access="hasRole('ROLE_ADMIN')"/>
-		<intercept-url pattern="/initDB" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/logout" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/cash" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/putMoney" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/menu" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/manager" access="hasRole('ROLE_ADMIN')"/>	
+		<intercept-url pattern="/sendLetterToManager" access="hasRole('ROLE_ADMIN')"/>	
 		<intercept-url pattern="/menu" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/schedule" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/appropriateJourneys/**" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/searchJourneys/**" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/registerPassenger/**" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/stationsChoosing" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/myTickets" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/out" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
+		<intercept-url pattern="/newRoute/**" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/creatingTrain" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/train" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/station" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/routesInfo" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/journey" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/journeyList" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/passengers" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/resetDB" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/initDB" access="hasRole('ROLE_ADMIN')"/>
+		
 	</http>
 	<beans:bean id="userService" class="com.security.UserService"/>
 	<authentication-manager>

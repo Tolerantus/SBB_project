@@ -10,57 +10,41 @@ body{
     background-size: cover;
 }
 .wrapper{
-    margin:100px auto;
-    width:450px;
-    background:#5f81a3;
+	margin-top:20px;
+    width:auto;
+    background:#005555;
     padding:30px;
+    border-radius:10px;
+    float:left;
 }
 h2{	
-	
-    color:#555;
-    text-align:center;
+    color:#fff;
     font-size:35px;
 }
-.input-login{
-    width:460px;
-    height:50px;
-    border:none;
-    padding:0 20px;
-    margin:10px 0;
-    color:#555;
-    font-size:17px;
-    background-color:#f9f9f9;
-}
-.input-login:focus{
-    background:#fff;
-}
-.input-login:hover::after { 
- content: attr(data-title); 
-}
+
 .submit{
+	float:left;
     margin-top:10px;
     padding:10px 30px;
     border:none;
     color:#fff;
-    background:#5f81a3;
+    background:#005555;
     cursor:pointer;
-    font-size:17px;
-    width:150px;
+    width:157px;
 }
 .submit:hover{
-    background:#789abc;
+    background:red;
 }
 
 select{
 	margin-left:10px;
 	width:150px;
 	height:30px;
-	font-size:20px;
 	border:none;
 	background:#fff;
 }
 select:hover{
-	background:#ffffff;
+	background:#fff;
 }
 .selector{
 	
@@ -82,10 +66,7 @@ select:hover{
 	color:#fff;
 }
 
-.flag{
-	width:20px;
-	height:20px;
-}
+
 select{
 	border:none;
 	margin-left:10px;
@@ -93,9 +74,7 @@ select{
 .date{
 	margin-top:10px;
 }
-#flag{
-	
-}
+
 #menu{
 
 	width:50px;
@@ -112,9 +91,96 @@ select{
 #menu:hover{
 	background:#789abc;
 }
-#top-menu{
-	/* position:fixed; */
-}
+
 .noway{
 	color:red;
+}
+.t{
+	margin:40px auto;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 0;
+  text-shadow: 0 1px 0 #fff;
+  color: #2a2a2a;
+  background: #fafafa;
+  background-image: -moz-linear-gradient(top, #fff, #eaeaea, #fff); /* Firefox 3.6 */
+  background-image: -webkit-gradient(linear,center bottom,center top,from(#fff),color-stop(0.5, #eaeaea),to(#fff));
+  margin-top:20px;
+  margin-bottom:20px;
+}
+td{
+	height: 50px;
+  padding: 0 20px;
+  border-bottom: 1px solid #cdcdcd;
+  box-shadow: 0 1px 0 white;
+  -moz-box-shadow: 0 1px 0 white;
+  -webkit-box-shadow: 0 1px 0 white;
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+}
+.t thead td
+{
+  font-size: 120%; 
+  font-weight: bold;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-topleft: 10px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top: 1px solid #eaeaea;
+}
+#cover {
+    background: url("http://www.aveva.com/Images/ajax-loader.gif") no-repeat scroll center center #FFF;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.table_wrap{
+	float:left;
+	margin-left:20;
+}
+.wrapper table{
+	width:314;
+}
+#dialog-message{
+	font-size: 11px;
+}
+.ui-dialog-title{
+	font-size: 13px;
+}
+.ui-button-text{
+	font-size:13px;
+}
+.image{
+ width:400px; 
+ height:250px; 
+ color: #0000; 
+ background:#FF7F00; 
+ border: 3px #CCCCCC solid;
+ -moz-border-radius: 10px; 
+ -webkit-border-radius: 10px; 
+ -khtml-border-radius:10px; 
+ border-radius: 10px; 
+	
+}
+.img_conteiner{
+	margin-top:0;
+	text-align: center;
+}
+figure{
+ width:400px; 
+ height:250px; 
+ margin:20 10;
+ float:left;
+}
+figcaption{color:#fff; font-size: 8pt}
+.figurer{
+	margin-left:0;
+}
+.validateTips{
+	font-size: 13px;
+}
+#money{
+	font-size: 13px;
 }

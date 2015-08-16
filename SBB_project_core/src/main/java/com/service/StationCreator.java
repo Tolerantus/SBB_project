@@ -24,20 +24,24 @@ public class StationCreator {
 		LOG.debug(dto);
 		LOG.debug("=====================================================================");
 			String stationName = dto.getStation();
-			boolean isExist = false;
-			Station s = dao.getStationByName(stationName);
-			if (s != null) {
-				isExist = true;
-			}
-			if (!isExist) {
-				dao.createStation(stationName);
-				LOG.info("Station created");
+			if (stationName == null) {
+				throw new RuntimeException();
 			} else {
-				dto.setExist(true);
+				boolean isExist = false;
+				Station s = dao.getStationByName(stationName);
+				if (s != null) {
+					isExist = true;
+				}
+				if (!isExist) {
+					dao.createStation(stationName);
+					LOG.info("Station created");
+				} else {
+					dto.setExist(true);
+				}
+				LOG.debug("=====================================================================");
+				LOG.debug(dto);
+				LOG.debug("=====================================================================");
+				return dto;
 			}
-			LOG.debug("=====================================================================");
-			LOG.debug(dto);
-			LOG.debug("=====================================================================");
-			return dto;
 	}
 }

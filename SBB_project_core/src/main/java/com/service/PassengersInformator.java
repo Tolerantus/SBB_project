@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dao.Dao;
 import com.dto.JourneyAndPassengers;
 import com.entities.Journey;
-import com.entities.Passenger;
 import com.entities.Ticket;
 @Service("passengerInformator")
 public class PassengersInformator {
@@ -30,37 +29,31 @@ public class PassengersInformator {
 		LOG.debug(dto);
 		LOG.debug("=====================================================================");
 			String journeyInfo = dto.getJourneyInfo();
-			String[] tokens = journeyInfo.split(" ");
-			Journey j = dao.getJourney(Integer.parseInt(tokens[0]));
-			List<Passenger> passengers = new ArrayList<Passenger>();
+			String[] tokens = journeyInfo.split(";");
+			Journey j = dao.getJourney(Integer.parseInt(tokens[0].substring(1)));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+			List<String> passInfo = new ArrayList<String>();
 			
 			for (Ticket t : dao.getTicketsOfJourney(j)) {
-					passengers.add(t.getPassenger());
+					StringBuilder sb = new StringBuilder();
+					sb.append(t.getTicketId()); separate(sb);
+					sb.append(t.getStDep().getStationName()); separate(sb);
+					sb.append(t.getStArr().getStationName()); separate(sb);
+					sb.append(sdf1.format(t.getPurchaseDate())); separate(sb);
+					sb.append(t.getPassenger().getPassengerName()); separate(sb);
+					sb.append(t.getPassenger().getPassengerSurname()); separate(sb);
+					sb.append(sdf.format(t.getPassenger().getPassengerBirthday()));
+					passInfo.add(sb.toString());
 			}
 			
-			List<String> passInfo = new ArrayList<String>();
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			if (!passengers.isEmpty()) {
-				for (Passenger p : passengers) {
-					StringBuilder sb = new StringBuilder();
-					sb.append(p.getPassengerName());
-					sb.append(" ");
-					sb.append(p.getPassengerSurname());
-					sb.append(" ");
-					sb.append(sdf.format(p.getPassengerBirthday()));
-					passInfo.add(sb.toString());
-				}
-
 				dto.setPassInfo(passInfo);
 				LOG.debug("=====================================================================");
 				LOG.debug(dto);
 				LOG.debug("=====================================================================");
 				return dto;
-			} else {
-				LOG.debug("=====================================================================");
-				LOG.debug(dto);
-				LOG.debug("=====================================================================");
-				return dto;
-			}
+	}
+	public void separate(StringBuilder sb) {
+		sb.append(";");
 	}
 }

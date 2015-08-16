@@ -43,50 +43,41 @@ public class PassengerRegistrator {
 		LOG.debug(dto);
 		LOG.debug("=====================================================================");
 			TicketInfo info = new TicketInfo(null, false);
-			String month = dto.getMonth();
-			String day = dto.getDay();
-			String year = dto.getYear();
+			String strBirthday = dto.getBirthday();
 			String name = dto.getName();
 			String surname = dto.getSurname();
-			String passengerDepAndDestStations = dto
-					.getPassengerDepAndDestStations();
-			String user = dto.getCurrentUser();
-			if (month.length() == 1) {
-				month = '0' + month;
-			}
-			if (day.length() == 1) {
-				day = '0' + day;
-			}
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			Date birthday = new Date();
+			String passengerDepAndDestStations = dto.getPassengerDepAndDestStations();
+			String user = dto.getCurrentUser(); User currentUser = dao.getUserByName(user);
+			double userCash = currentUser.getCash();
 			
-				birthday = sdf.parse(day + "/" + month + "/" + year);
 			
-			Passenger newPassenger = dao.createPassenger(name, surname,
-					birthday);
-			String[] passengerDepAndDestStations_tokens = passengerDepAndDestStations
-					.split(";");
-			int journeyId = Integer
-					.parseInt(passengerDepAndDestStations_tokens[0]);
-			Station st_dep = dao.getStation(Integer
-					.parseInt(passengerDepAndDestStations_tokens[3]));
-			Station st_arr = dao.getStation(Integer
-					.parseInt(passengerDepAndDestStations_tokens[4]));
-			List<Ticket> ticketsOfThisPassenger = dao.getTicketsOfPassenger(newPassenger);
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String[] passengerDepAndDestStations_tokens = passengerDepAndDestStations.split(";");
+			
+			
+			
+			Date birthday = sdf.parse(strBirthday);
+			if (birthday.getTime()>new Date().getTime()){
+				info.setTicketInfo("birthday");
+				return info;
+			}
+			Passenger passenger = dao.getPassenger(name, surname, birthday);
+			if (passenger == null) {
+				passenger = dao.createPassenger(name, surname, birthday);
+			}
+			
+			int journeyId = Integer.parseInt(passengerDepAndDestStations_tokens[0]);
+			Station stDep = dao.getStation(Integer.parseInt(passengerDepAndDestStations_tokens[3]));
+			Station stArr = dao.getStation(Integer.parseInt(passengerDepAndDestStations_tokens[4]));
+			List<Ticket> ticketsOfThisPassenger = dao.getTicketsOfPassenger(passenger);
 			for (Ticket t : ticketsOfThisPassenger) {
 				if (t.getJourney().getJourneyId() == journeyId) {
-					dao.deletePassenger(newPassenger.getPassengerId());
 					info.setExist(true);
 				}
 			}
 			if (!info.isExist()) {
-				Ticket newTicket = dao.createTicket(
-						newPassenger, dao.getJourney(journeyId),
-						st_dep, st_arr, dao.getDate());
-				User currentUser = dao.getUserByName(user);
-				dao.createUserAndTicket(newTicket, currentUser);
-				dao.decrementEmptySeats(journeyId, st_dep.getStationId(),
-						st_arr.getStationId());
+				
 				List<String> allJourneysData = dto.getAllJourneysData();
 				String passengerDepAndDestTime = "";
 				for (String s : allJourneysData) {
@@ -94,29 +85,41 @@ public class PassengerRegistrator {
 						passengerDepAndDestTime = s;
 					}
 				}
-				String[] passengerDepAndDestTime_tokens = passengerDepAndDestTime
-						.split(";");
-				String passengerDepTime = passengerDepAndDestTime_tokens[1];
-				String passengerDestTime = passengerDepAndDestTime_tokens[2];
+				String[] passengerDepAndDestTime_tokens = passengerDepAndDestTime.split(";");
 				String cost = passengerDepAndDestTime_tokens[3];
-
-				StringBuilder ticketInfo = new StringBuilder(
-						String.valueOf(newTicket.getTicketId()));
-				ticketInfo.append(";");
-				ticketInfo.append(newPassenger.getPassengerName());
-				ticketInfo.append(";");
-				ticketInfo.append(newPassenger.getPassengerSurname());
-				ticketInfo.append(";");
-				ticketInfo.append(st_dep.getStationName());
-				ticketInfo.append(";");
-				ticketInfo.append(passengerDepTime);
-				ticketInfo.append(";");
-				ticketInfo.append(st_arr.getStationName());
-				ticketInfo.append(";");
-				ticketInfo.append(passengerDestTime);
-				ticketInfo.append(";");
-				ticketInfo.append(cost);
-				info.setTicketInfo(ticketInfo.toString());
+				double ticketCost = Double.parseDouble(cost);
+				
+				if (ticketCost <= userCash) {
+					
+					Ticket newTicket = dao.createTicket(passenger, dao.getJourney(journeyId), stDep, stArr, dao.getDate());
+					dao.createUserAndTicket(newTicket, currentUser);
+					dao.decrementEmptySeats(journeyId, stDep.getStationId(), stArr.getStationId());
+					dao.debitFundsFromTheAccount(currentUser, ticketCost);
+					
+					String passengerDepTime = passengerDepAndDestTime_tokens[1];
+					String passengerDestTime = passengerDepAndDestTime_tokens[2];
+					
+					
+					StringBuilder ticketInfo = new StringBuilder(String.valueOf(newTicket.getTicketId()));
+					ticketInfo.append(";");
+					ticketInfo.append(passenger.getPassengerName());
+					ticketInfo.append(";");
+					ticketInfo.append(passenger.getPassengerSurname());
+					ticketInfo.append(";");
+					ticketInfo.append(stDep.getStationName());
+					ticketInfo.append(";");
+					ticketInfo.append(passengerDepTime);
+					ticketInfo.append(";");
+					ticketInfo.append(stArr.getStationName());
+					ticketInfo.append(";");
+					ticketInfo.append(passengerDestTime);
+					ticketInfo.append(";");
+					ticketInfo.append(cost);
+					info.setTicketInfo(ticketInfo.toString());
+				}
+				
+				
+				
 			}
 			LOG.debug("=====================================================================");
 			LOG.debug(info);

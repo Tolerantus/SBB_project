@@ -33,5 +33,4 @@
     <context:property-placeholder location="/WEB-INF/spring.properties" />
     
      <import resource="hibernate-context.xml" />
- 	<!-- <import resource="spring-mail.xml"/> -->
 </beans>

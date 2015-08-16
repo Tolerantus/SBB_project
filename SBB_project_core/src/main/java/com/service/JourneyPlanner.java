@@ -85,6 +85,7 @@ public class JourneyPlanner {
 						return dto;
 					}
 				} else {
+					dto.setTime(""); dto.setDate("");
 					LOG.debug("=====================================================================");
 					LOG.debug(dto);
 					LOG.debug("=====================================================================");

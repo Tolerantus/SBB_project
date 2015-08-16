@@ -111,10 +111,6 @@
           <groupId>org.jboss.spec.javax.annotation</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>activation</artifactId>
-          <groupId>javax.activation</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>httpclient</artifactId>
           <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
@@ -136,10 +132,12 @@
     </dependency>
   </dependencies>
   <properties>
+    <sonar.language>java</sonar.language>
     <spring.version>4.1.7.RELEASE</spring.version>
     <spring.security.version>4.0.2.RELEASE</spring.security.version>
     <log4j.version>1.2.17</log4j.version>
     <maven-shade-plugin.version>1.7.1</maven-shade-plugin.version>
+    <sonar.host.url>http://localhost:9000/</sonar.host.url>
   </properties>
 </project>
 

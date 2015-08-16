@@ -6,7 +6,6 @@ C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\web\serv
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\JourneyPlanner.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\controller\SpringController.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\FinalRouteBuilder.java
-C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\web\service\WebServiceRestController.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\SeatsChecker.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\StationReturner.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\CheckUser.java
@@ -15,8 +14,8 @@ C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\RouteDirectionsChecker.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\JourneyBriefer.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\mail\MailService.java
-C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\web\service\RestEasyServiceImpl.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\UserRegistrator.java
+C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\Cashier.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\mail\CustomMailSender.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\service\Dispatcher.java
 C:\Documents\Tsys\E_prjs\SBB_project\SBB_project_core\src\main\java\com\security\UserService.java

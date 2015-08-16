@@ -5,7 +5,7 @@ function validate(){
 	var route = $('#route').val();
 	
 	var err = false;
-	var patt = new RegExp("^[A-Za-z0-9-\s]{4,25}$");
+	var patt = new RegExp("^[A-Za-z0-9-\s]{4,40}$");
 	var costPatt = new RegExp("^[0-9]{1,10}(\\.\\d\\d)?$")
 	$('#route').removeClass('error-box');
 	$('#status').removeClass('error-mes');

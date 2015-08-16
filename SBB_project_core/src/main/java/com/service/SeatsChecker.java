@@ -40,7 +40,7 @@ private static final Logger LOG = Logger.getLogger(SeatsChecker.class);
 			int arrStep = Integer.parseInt(tokens[2]);
 			List<Seats> seats = dao.getSeatsOnJourney(j.getJourneyId());
 			if (!seats.isEmpty()) {
-				int emptySeats = 200;
+				int emptySeats = j.getTrain().getTrainSeats();
 				for (Seats s : seats) {
 					if (s.getRouteStep() >= depStep
 							&& s.getRouteStep() <= arrStep) {

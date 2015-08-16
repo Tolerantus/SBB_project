@@ -3,7 +3,7 @@
  */
 function validate(){
 	var text = $('#typed').val();
-	var patt = new RegExp("^[A-Za-z_]{1,15}$");
+	var patt = new RegExp("^([A-Z])([a-z\\s]{1,20})[-]?[A-Z]?[a-z\\s]{0,19}[a-z0-9]$");
 	var err = false;
 	var isAnyStations = $('#stations').length?true:false;
 	$('#status').removeClass('error-mes');

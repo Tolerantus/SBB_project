@@ -3,12 +3,13 @@ package com.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dto.AllJourneysInfo;
+import com.dto.FilteredJourneysInfo;
 import com.dto.AllRoutesInfo;
 import com.dto.ChoosedJourney;
 import com.dto.CodeRole;
 import com.dto.InitDBRequest;
 import com.dto.JourneyAndPassengers;
+import com.dto.MoneyPutRequest;
 import com.dto.NewJourneyInfo;
 import com.dto.NewRouteStartAndFinish;
 import com.dto.NewStationInfo;
@@ -48,7 +49,7 @@ public class Dispatcher {
 	private DBInitializer dbInitializer;
 	private TicketService ticketService;
 	private UserActivator userActivator;
-	
+	private Cashier cashier;
 	public  Object service(Object dto) throws Exception{
 		if (dto instanceof UserInfo){
 			return checkUser.check((UserInfo)dto);
@@ -95,8 +96,8 @@ public class Dispatcher {
 		if (dto instanceof NewStationInfo){
 			return stationCreator.create((NewStationInfo) dto);
 		} else
-		if (dto instanceof AllJourneysInfo){
-			return journeyBriefer.getInfo((AllJourneysInfo) dto);
+		if (dto instanceof FilteredJourneysInfo){
+			return journeyBriefer.getInfo((FilteredJourneysInfo) dto);
 		} else
 		if (dto instanceof JourneyAndPassengers){
 			return passengersInformator.getInfo((JourneyAndPassengers) dto);
@@ -112,6 +113,12 @@ public class Dispatcher {
 		} else 
 		if (dto instanceof CodeRole) {
 			return userActivator.activateUser((CodeRole) dto);
+		} else
+		if (dto instanceof String) {
+			return cashier.getCash((String) dto);
+		} else
+		if (dto instanceof MoneyPutRequest) {
+			cashier.putMoney((MoneyPutRequest) dto);
 		}
 	return null;
 	}
@@ -201,6 +208,11 @@ public class Dispatcher {
 	public void setUserActivator(UserActivator userActivator) {
 		this.userActivator = userActivator;
 	}
+	@Autowired
+	public void setCashier(Cashier cashier) {
+		this.cashier = cashier;
+	}
+	
 	
 	
 	

@@ -90,7 +90,7 @@ public User getUserByAccessCode(String accessCode) {
 	Query query = session.createQuery("from UserAccessCode as uac where uac.code=:param");
 	query.setParameter("param", accessCode);
 	List<UserAccessCode> accessCodes = query.list();
-	if (accessCodes.size() == 0) {
+	if (accessCodes.isEmpty()) {
 		return null;
 	} else 
 	if (accessCodes.size() > 1) {
@@ -167,12 +167,10 @@ public  Set<Station> getAllStationsOnRoute( int routeId) {
 
 	Session session = sessionFactory.getCurrentSession();
 	Set<Station> stations = new HashSet<Station>();
-	Query query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId);
+	Query query = session.createQuery("from Shedule as s where s.route.routeId=?");
+	query.setParameter(0, routeId);
 	for (Shedule s : (List<Shedule>)query.list()) {	
 		Direction d = s.getDirection();
-//		Direction d = getDirection(s.getDirectionId());
-//		stations.add(getStation(d.getStArr()));
-//		stations.add(getStation(d.getStDep()));
 		stations.add(d.getStArr());
 		stations.add(d.getStDep());
 	}
@@ -219,13 +217,15 @@ public  Direction createDirection( Station stDep,  Station stArr,  long time,  d
 public  Direction getDirectionByStartFinish( int start,  int finish){
 
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Direction as d where d.stDep.stationId=" + start + " and d.stArr.stationId=" + finish);
+	Query query = session.createQuery("from Direction as d where d.stDep.stationId=? and d.stArr.stationId=?");
+	query.setParameter(0, start);
+	query.setParameter(1, finish);
 	List<Direction> directions = query.list();
-	if (directions.size() == 0) {
+	if (directions.isEmpty()) {
 		return null;
 	} else
 	if (directions.size() > 1) {
-		throw new RuntimeException("more then one direction were found");
+		throw new RuntimeException();
 	} else {
 		return directions.get(0);
 	}
@@ -345,6 +345,22 @@ public List<Journey> getAllJourneys() {
 }
 
 @SuppressWarnings("unchecked")
+public List<Journey> getJourneysBetween(Date start, Date stop) {
+	Session session = sessionFactory.getCurrentSession();
+	Criteria crit = session.createCriteria(Journey.class);
+	if (start != null && stop != null){
+		crit.add(Restrictions.between("timeDep", start, stop));
+	} else
+	if (stop == null && start != null) {
+		crit.add(Restrictions.ge("timeDep", start));
+	} else
+	if (stop != null && start == null) {
+		crit.add(Restrictions.le("timeDep", stop));
+	} 
+	return crit.list();
+}
+
+@SuppressWarnings("unchecked")
 public List<Journey> getJourneysInTimeInterval(Date start, Date stop) {
 	Session session = sessionFactory.getCurrentSession();
 	Criteria crit = session.createCriteria(Journey.class);
@@ -376,8 +392,11 @@ public List<Station> getAllStations() {
 public List<Shedule> getShedulesContainStation(int station) {
 	
 	Session session = sessionFactory.getCurrentSession();
-	List<Direction> directions = session.
-			createQuery("from Direction as d where d.stArr.stationId=" + station + " or d.stDep.stationId=" + station).list();
+	Query query = session.
+			createQuery("from Direction as d where d.stArr.stationId=? or d.stDep.stationId=?");
+	query.setParameter(0, station);
+	query.setParameter(1, station);
+	List<Direction> directions = query.list();
 	List<Shedule> shedulesContainStation = new ArrayList<Shedule>();
 	for (Direction d : directions) {
 		List<Shedule> shedules = session.
@@ -423,13 +442,14 @@ public  void initRoutes(){
 @SuppressWarnings("unchecked")
 public  Route deleteRoute(int routeId){
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Route as r where r.routeId=" + routeId);
+	Query query = session.createQuery("from Route as r where r.routeId=?");
+	query.setParameter(0, routeId);
 	List<Route> routes = query.list();
-	if (routes.size() == 0) {
+	if (routes.isEmpty()) {
 		return null;
 	} else
 	if (routes.size() > 1) {
-		throw new RuntimeException("more than one route were found");
+		throw new RuntimeException();
 	} else {
 		session.delete(routes.get(0));
 	}
@@ -455,8 +475,11 @@ public   Shedule createShedule(Direction direction, Route route,  int step) {
 @SuppressWarnings("unchecked")
 public Shedule getShedule(int routeId, int dirId, int step) {
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId + 
-			" and s.direction.directionId=" + dirId + " and s.step=" + step);
+	Query query = session.createQuery("from Shedule as s where s.route.routeId=?"
+			+ " and s.direction.directionId=? and s.step=?");
+	query.setParameter(0, routeId);
+	query.setParameter(1, dirId);
+	query.setParameter(2, step);
 	List<Shedule> shedules = query.list();
 	if (shedules.isEmpty()) {
 		return null;
@@ -483,7 +506,8 @@ public  void initShedules() {
 		
 		
 		while (currentStep<steps) {
-			Query query = session.createQuery("from Direction as d where d.stDep.stationId=" + stDepId);
+			Query query = session.createQuery("from Direction as d where d.stDep.stationId=?");
+			query.setParameter(0, stDepId);
 			List<Direction> possibleDirections = query.list();
 			Iterator<Direction> iterator = possibleDirections.iterator();
 			while (iterator.hasNext()) {
@@ -496,7 +520,7 @@ public  void initShedules() {
 				
 			Direction currentDirection = possibleDirections.get(random
 					.nextInt(possibleDirections.size()));
-			while (routeStations.contains(currentDirection.getStArr())) {
+			while (routeStations.contains(currentDirection.getStArr().getStationId())) {
 				currentDirection = possibleDirections.get(random.nextInt(possibleDirections.size()));
 			}
 			createShedule(currentDirection, r, currentStep);
@@ -513,7 +537,8 @@ public  void initShedules() {
 @SuppressWarnings("unchecked")
 public List<Shedule> getShedulesOfRoute(int routeId) {
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId);
+	Query query = session.createQuery("from Shedule as s where s.route.routeId=?");
+	query.setParameter(0, routeId);
 	return query.list();
 }
 
@@ -560,7 +585,8 @@ public Journey getJourney( int jourId) {
 @SuppressWarnings("unchecked")
 public   List<Journey> getAllJourneysOfTrain( int trainId) {
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Journey as j where j.train.trainId=" + trainId);
+	Query query = session.createQuery("from Journey as j where j.train.trainId=?");
+	query.setParameter(0, trainId);
 	return query.list();
 }
 
@@ -592,7 +618,24 @@ public Passenger getPassenger(int passId) {
 	Session session = sessionFactory.getCurrentSession();
 	return (Passenger) session.get(Passenger.class, passId);
 }
-
+@SuppressWarnings("unchecked")
+public Passenger getPassenger(String name, String surname, Date birthday) {
+	Session session = sessionFactory.getCurrentSession();
+	Criteria crit = session.createCriteria(Passenger.class);
+	crit.add(Restrictions.eq("passengerName", name));
+	crit.add(Restrictions.eq("passengerSurname", surname));
+	crit.add(Restrictions.eq("passengerBirthday", birthday));
+	
+	List<Passenger> passengers = crit.list();
+	if (passengers.isEmpty()) {
+		return null;
+	} else 
+	if (passengers.size()>1) {
+		throw new RuntimeException();
+	} else {
+		return passengers.get(0);
+	}
+}
 @SuppressWarnings("unchecked")
 public void clearPassengers() {
 	Session session = sessionFactory.getCurrentSession();
@@ -611,13 +654,32 @@ public UserRole createUserRole(String role) {
 
 public void setUserAs(User user, String role) {
 	Session session = sessionFactory.getCurrentSession();
-	UserRole userRole = getRoleByString(role);
 	Set<UserRole> userRoles = new HashSet<UserRole>();
+	UserRole userRole = getRoleByString(role);
+	if (role.equals("ROLE_ADMIN")) {
+		UserRole userRole1 = getRoleByString("ROLE_USER");
+		userRoles.add(userRole1);
+	}
+	
 	userRoles.add(userRole);
 	user.setUserRole(userRoles);
 	session.update(user);
 }
+public void debitFundsFromTheAccount(User user, double pay) {
+	Session session = sessionFactory.getCurrentSession();
+	double cash = user.getCash();
+	double newCash = cash - pay;
+	user.setCash(newCash);
+	session.update(user);
+}
 
+public void addFundsToTheAccount(User user, double money) {
+	Session session = sessionFactory.getCurrentSession();
+	double cash = user.getCash();
+	double newCash = cash + money;
+	user.setCash(newCash);
+	session.update(user);
+}
 public UserRole deleteUserRole(int userRoleId) {
 	Session session = sessionFactory.getCurrentSession();
 	UserRole userRole = (UserRole) session.get(UserRole.class, userRoleId);
@@ -717,7 +779,8 @@ public Ticket getTicket( int ticketId) {
 @SuppressWarnings("unchecked")
 public List<Ticket> getTicketOfUser( int userId) {
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from UserAndTicket as ut where ut.user.userId=" + userId);
+	Query query = session.createQuery("from UserAndTicket as ut where ut.user.userId=?");
+	query.setParameter(0, userId);
 	List<UserAndTicket> userTickets = query.list();
 	List<Ticket> tickets = new ArrayList<Ticket>();
 	for (UserAndTicket ut: userTickets) {
@@ -768,20 +831,25 @@ public void initTickets() throws ParseException {
 	String[] birthdays = {"12/03/1961", "07/06/2003", "30/05/1968", "22/12/1986", "31/01/1996", "15/03/2000", "02/10/1955", "19/11/2012"};
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	List<Journey> journeys = session.createQuery("from Journey").list();
-	Query query = session.createQuery("from User as u where u.accountType=" + true);
+	Query query = session.createQuery("from User as u where u.accountType=?");
+	query.setParameter(0, true);
 	User u = (User) query.list().get(0);
 	for (int i = 0; i < names.length; i++) {
 		Passenger p = createPassenger(names[i], surnames[i], sdf.parse(birthdays[i]));
 		Journey j = journeys.get(i % journeys.size());
 		int routeId = j.getRoute().getRouteId();
-		query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId + " and s.step=" + 0);
+		query = session.createQuery("from Shedule as s where s.route.routeId=? and s.step=?");
+		query.setParameter(0, routeId);
+		query.setParameter(1, 0);
 		List<Shedule> result = query.list();
-		Shedule routeBeginning = (Shedule) result.get(0);
+		Shedule routeBeginning = result.get(0);
 		query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId);
 		List<Shedule> steps = query.list();
 		int lastStep = steps.size()-1;
 		
-		query = session.createQuery("from Shedule as s where s.route.routeId=" + routeId + " and s.step=" + lastStep);
+		query = session.createQuery("from Shedule as s where s.route.routeId=? and s.step=?");
+		query.setParameter(0, routeId);
+		query.setParameter(1, lastStep);
 		Shedule routeEnding = (Shedule) query.list().get(0);
 		Direction routeBeginningD = (routeBeginning.getDirection());
 		Direction routeEndingD = (routeEnding.getDirection());
@@ -844,7 +912,8 @@ public Seats createSeats( Journey journey,  int step,  int emptySeats) {
 @SuppressWarnings("unchecked")
 public List<Seats> getSeatsOnJourney(int journeyId) {
 	Session session = sessionFactory.getCurrentSession();
-	Query query = session.createQuery("from Seats as s where s.journey.journeyId=" + journeyId);
+	Query query = session.createQuery("from Seats as s where s.journey.journeyId=?");
+	query.setParameter(0, journeyId);
 	return query.list();
 }
 public Seats deleteSeats(int seatsId) {

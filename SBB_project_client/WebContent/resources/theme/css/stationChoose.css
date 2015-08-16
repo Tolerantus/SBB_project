@@ -1,0 +1,186 @@
+@CHARSET "UTF-8";
+*{
+    margin:0;
+    padding:0;
+    outline:none;
+}
+body{
+    background-image: url("#{resource['img:Auth.jpg']}");
+    font-family:"PT sans" sans-serif;
+    background-size: cover;
+}
+.wrapper{
+	margin-top:20px;
+    width:auto;
+    background:#005555;
+    padding:30px;
+    border-radius:10px;
+    float:left;
+}
+h2{	
+    color:#fff;
+    font-size:35px;
+}
+
+.submit{
+	float:left;
+    margin-top:10px;
+    padding:10px 30px;
+    border:none;
+    color:#fff;
+    background:#005555;
+    cursor:pointer;
+    width:157px;
+}
+.submit:hover{
+    background:red;
+}
+
+select{
+	margin-left:10px;
+	width:150px;
+	height:30px;
+	border:none;
+	background:#fff;
+}
+select:hover{
+	background:#fff;
+}
+.selector{
+	
+}
+.dir{
+	font-size:20px;
+	margin-right:20px;
+}
+.menu{
+	width:200px;
+	margin:40px auto;
+}
+.user img{
+	margin:10px 10px;
+	width:30px;
+	height:30px;
+}
+.user{
+	color:#fff;
+}
+
+
+select{
+	border:none;
+	margin-left:10px;
+}
+.date{
+	margin-top:10px;
+}
+
+#menu{
+
+	width:50px;
+	height:50px;
+    border:none;
+    background:#5f81a3;
+    cursor:pointer;
+    
+}
+#menu img{
+	width:50px;
+	height:50px;
+}
+#menu:hover{
+	background:#789abc;
+}
+
+.noway{
+	color:red;
+}
+.t{
+	margin:40px auto;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 0;
+  text-shadow: 0 1px 0 #fff;
+  color: #2a2a2a;
+  background: #fafafa;
+  background-image: -moz-linear-gradient(top, #fff, #eaeaea, #fff); /* Firefox 3.6 */
+  background-image: -webkit-gradient(linear,center bottom,center top,from(#fff),color-stop(0.5, #eaeaea),to(#fff));
+  margin-top:20px;
+  margin-bottom:20px;
+}
+td{
+	height: 50px;
+  padding: 0 20px;
+  border-bottom: 1px solid #cdcdcd;
+  box-shadow: 0 1px 0 white;
+  -moz-box-shadow: 0 1px 0 white;
+  -webkit-box-shadow: 0 1px 0 white;
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+}
+.t thead td
+{
+  font-size: 120%; 
+  font-weight: bold;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-topleft: 10px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top: 1px solid #eaeaea;
+}
+#cover {
+    background: url("http://www.aveva.com/Images/ajax-loader.gif") no-repeat scroll center center #FFF;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.table_wrap{
+	float:left;
+	margin-left:20;
+}
+.wrapper table{
+	width:314;
+}
+#dialog-message{
+	font-size: 11px;
+}
+.ui-dialog-title{
+	font-size: 13px;
+}
+.ui-button-text{
+	font-size:13px;
+}
+.image{
+ width:400px; 
+ height:250px; 
+ color: #0000; 
+ background:#FF7F00; 
+ border: 3px #CCCCCC solid;
+ -moz-border-radius: 10px; 
+ -webkit-border-radius: 10px; 
+ -khtml-border-radius:10px; 
+ border-radius: 10px; 
+	
+}
+.img_conteiner{
+	margin-top:0;
+	text-align: center;
+}
+figure{
+ width:400px; 
+ height:250px; 
+ margin:20 10;
+ float:left;
+}
+figcaption{color:#fff; font-size: 8pt}
+.figurer{
+	margin-left:0;
+}
+.validateTips{
+	font-size: 13px;
+}
+#money{
+	font-size: 13px;
+}

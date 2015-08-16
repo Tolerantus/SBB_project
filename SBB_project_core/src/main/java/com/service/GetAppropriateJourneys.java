@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dao.Dao;
+import com.dto.ChoosedJourney;
 import com.dto.JourneysInfo;
 import com.dto.StationsForSheduling;
 import com.entities.Direction;
 import com.entities.Journey;
 import com.entities.Route;
+import com.entities.Seats;
 import com.entities.Shedule;
 import com.entities.Station;
 @Service("getAppropriateJourneys")
@@ -158,12 +160,16 @@ public  JourneysInfo getAppropriateJourneys(Station stDep, Station stArr, String
 		if (departurePoint >= arrivalPoint || (j.getTimeDep().getTime()-(new Date()).getTime()) <= tenMinutes){
 			iterator.remove();
 		}
+		if (getEmptySeats(j, stDep, stArr) == 0) {
+			iterator.remove();
+		}
 	}
 		
 		if (!appropriateJourneys.isEmpty()){
 			
 			List<String> journeyStringData = new ArrayList<String>();
 			for (Journey j : appropriateJourneys){
+				
 				String id = String.valueOf(j.getJourneyId());
 				Date departure = j.getTimeDep();
 				Date arrival = j.getTimeDep();
@@ -192,7 +198,7 @@ public  JourneysInfo getAppropriateJourneys(Station stDep, Station stArr, String
 						cost +=d.getCost();
 					}
 				}
-				if (!date.equals("")){
+				if (!date.equals("")) {
 					Date targetedDateBegin = sdf.parse(date);
 					Date targetedDateEnd = new Date(targetedDateBegin.getTime() + 24*60*60*1000);
 					
@@ -205,6 +211,8 @@ public  JourneysInfo getAppropriateJourneys(Station stDep, Station stArr, String
 						journeyData.append(sdf1.format(arrival));
 						journeyData.append(";");
 						journeyData.append(cost);
+						journeyData.append(";");
+						journeyData.append(getEmptySeats(j, stDep, stArr));
 						journeyStringData.add(journeyData.toString());
 						
 						StringBuilder info = new StringBuilder(id);
@@ -226,6 +234,8 @@ public  JourneysInfo getAppropriateJourneys(Station stDep, Station stArr, String
 					journeyData.append(sdf1.format(arrival));
 					journeyData.append(";");
 					journeyData.append(cost);
+					journeyData.append(";");
+					journeyData.append(getEmptySeats(j, stDep, stArr));
 					journeyStringData.add(journeyData.toString());
 					
 					StringBuilder info = new StringBuilder(id);
@@ -251,4 +261,30 @@ public  JourneysInfo getAppropriateJourneys(Station stDep, Station stArr, String
 		}
 		
 }
+	public int getEmptySeats(Journey journey, Station start, Station finish) {
+		List<Seats> seats = dao.getSeatsOnJourney(journey.getJourneyId());
+		if (!seats.isEmpty()) {
+			int emptySeats = journey.getTrain().getTrainSeats();
+			List<Shedule> shedules = dao.getShedulesOfRoute(journey.getRoute().getRouteId());
+			int depStep = 0;
+			int arrStep = 0;
+			for (Shedule shedule : shedules) {
+				Direction dir = shedule.getDirection();
+				if (dir.getStDep().equals(start)) {
+					depStep = shedule.getStep();
+				}
+				if (dir.getStArr().equals(finish)) {
+					arrStep = shedule.getStep();
+				}
+			}
+			for (Seats s : seats) {
+				if (s.getRouteStep() >= depStep
+						&& s.getRouteStep() <= arrStep) {
+					emptySeats = Math.min(emptySeats, s.getEmptySeats());
+				}
+			}
+			return emptySeats;
+		}
+		return 0;
+	}
 }

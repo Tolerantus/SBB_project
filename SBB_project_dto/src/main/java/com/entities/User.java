@@ -31,6 +31,9 @@ private boolean accountType;
 @Column(name = "user_role")
 private Set<UserRole> userRole = new HashSet<UserRole>(0);
 
+@Column(name = "cash")
+private double cash;
+
 @Override
 public int hashCode() {
 	final int prime = 31;
@@ -62,6 +65,7 @@ public User(int userId, String userLogin, String userPassword,
 	this.userPassword = userPassword;
 	this.accountType = accountType;
 	this.userRole = userRole;
+	this.cash = 0;
 }
 
 
@@ -113,6 +117,17 @@ public Set<UserRole> getUserRole() {
 
 public void setUserRole(Set<UserRole> userRole) {
 	this.userRole = userRole;
+}
+
+
+
+public double getCash() {
+	return cash;
+}
+
+
+public void setCash(double cash) {
+	this.cash = cash;
 }
 
 

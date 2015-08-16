@@ -3,41 +3,36 @@
 <%@ page import="java.util.List" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" src=<c:url value='/resources/inputDirections.js'/>></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href=<c:url value='/resources/ValidationError.css'/>>
+<link rel="stylesheet" href=<c:url value='/resources/stationChoose.css'/>>
+<link rel="stylesheet" href=<c:url value='/resources/Nav.css'/>>
 <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href=<c:url value='/resources/InputDirection.css'/>>
-<title>Input direction data - SBB</title>
+<script type="text/javascript" src=<c:url value='/resources/cash.js'/>></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>Directions - SBB</title>
 </head>
 
 <body>
-<c:if test="${pageContext.request.userPrincipal.name != null}">
-<%-- <c:if test="${admin==true }"> --%>
-<div id="top-menu">
-	<div class="user">
-		<img alt="" src=<c:url value='/resources/images/1.png'/>>
-		<span class="user">${pageContext.request.userPrincipal.name}|<a href="<c:url value="/logout" />" > Logout</a></span>
-	</div>
-	<div >
-		<div id="menu">
-			
-			<a href="<c:url value="/menu"/>">
-				<img alt="" src=<c:url value='/resources/images/home.png'/>>
-			</a>
-		</div>
-	</div>
-</div>
-<h1>Input new data for this route</h1>
+<%@ include file="Nav.jsp" %>
+<div id="cover"></div>
+<div class="chunck">
+<div class="wrapper" style="width: auto;">
+<h2>Input new data for this route</h2>
 <%List<String> directions = (List<String>) session.getAttribute("requiredDirectionData");%>
 
 <form action="<c:url value="/newRoute/newStartAndFinish/timeAndCost/newRoute"/>" method="post" name="build" id="build">
 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	<table id="t">
+	<table class="t">
 	<%if (directions!=null&&directions.size()>0){ %>
 		<tr>
 			<th>
@@ -78,47 +73,42 @@
 				</select>
 			</td>
 			<td>
-				<input type="text" name="<%=direction%>-cost" placeholder="##...###.##">
+				<input type="text" name="<%=direction%>-cost" placeholder="##...###.##" style="height:30px;">
 			</td>
 			
 		</tr>
 		<%} %>
+		<!-- </table>
+		<table class="t"> -->
+			<tr>
+				<td>
+					Route name:
+				</td>
+				<td>
+					<input type="text"  name="route" id="route" placeholder="route name">
+				</td>
+			</tr>
 		</table>
-		<div align="center" id="route_name">
-				
-			
-				<input type="text"  name="route" id="route" placeholder="route name">
-		</div>
 		
-	
 </form>
-<c:if test="${error!=null }"><h4 align="center">Route with the same name is already exist</h4></c:if>
-
-
-
-	<div align="center">
-			<input type="button" class="submit" value="Submit" onclick="validate()">
+	<c:if test="${error!=null }"><h4 style="color:red;">Route with the same name is already exist</h4></c:if>
+	<input type="button" class="submit" value="Submit" onclick="validate()">
+</div>
+	<div class="table_wrap">
+		<table class="t" id="route">
+			<c:forEach var="st" items="${sessionScope.newRoute}">
+				<tr>
+					<td><b>${st}</b></td>
+				</tr>
+			</c:forEach>
+		</table>
 	</div>
-		
-	
-	
-	
-	</c:if>
-<%-- <c:if test="${admin==false }">
-<h3 align="center" style="color:red">You do not have permission to view this page!</h3>
-	<form action="${menuURL }">
-	<input type="submit" class="submit" value="Login">
-	</form>
-</c:if> --%>
-<%-- </c:if> --%>
-<c:if test="${pageContext.request.userPrincipal.name == null}">
-	<h1 align="center" style="color:red">Unregistered user cannot look through this page!</h1>
-	<div align="center">
-		<c:url var="loginURL" value="/login"/>
-		<form action="${loginURL }">
-			<input type="submit" class="submit" value="Login">
-		</form>
-	</div>
-</c:if>	
+</div>
+<script type="text/javascript">
+	$(window).load(function(){
+	    $('#cover').fadeOut(300);
+	    checkCash();
+	});
+</script>
 </body>
 </html>

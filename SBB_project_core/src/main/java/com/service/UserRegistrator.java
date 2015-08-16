@@ -36,8 +36,8 @@ private static final Logger LOG = Logger.getLogger(UserRegistrator.class);
 			UserExist user = null;
 			if (oldUser == null) {
 				
-				User newUser = dao.createUser(dto.getLogin(), dto.getPassword(), false, null);
-				mailService.sendVerificationLetter(newUser, false);
+				User newUser = dao.createUser(dto.getLogin(), dto.getPassword(), dto.isAdmin(), null);
+				mailService.sendVerificationLetter(newUser);
 				LOG.info("User created");
 				
 				user = new UserExist(false, false);
